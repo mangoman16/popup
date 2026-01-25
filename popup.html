@@ -94,8 +94,9 @@
     position: relative !important;
     max-width: 1100px !important;
     width: 95% !important;
-    max-height: 94vh !important;
-    overflow: hidden !important;
+    max-height: 92vh !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
     border-radius: 36px !important;
     background: linear-gradient(145deg, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0.65) 50%, rgba(255, 255, 255, 0.75) 100%) !important;
     backdrop-filter: blur(30px) saturate(200%) !important;
@@ -120,7 +121,7 @@
     flex-direction: row !important;
     overflow: hidden !important;
     border-radius: 36px !important;
-    min-height: 0 !important;
+    min-height: 500px !important;
   }
   
   /* Language Toggle */
@@ -696,122 +697,38 @@
 
   /* ========================================
      RESPONSIVE - SMALLER LAPTOPS (height-based)
-     Ensures popup fits without scrolling
      ======================================== */
-  @media screen and (max-height: 900px) and (min-width: 901px) {
-    #mtp-container {
-      max-height: 95vh !important;
-      overflow: hidden !important;
-    }
-    #mtp-content { min-height: auto !important; }
-    .mtp-image-side { padding: 35px 30px !important; }
-    .mtp-slider-container { max-width: 320px !important; }
-    .mtp-text-side { padding: 45px 40px 35px !important; }
-    .mtp-glass-container { padding: 25px !important; }
-    .mtp-title { font-size: 28px !important; margin-bottom: 16px !important; }
-    .mtp-subtitle { font-size: 15px !important; margin-bottom: 16px !important; line-height: 1.6 !important; }
-    .mtp-features { margin-bottom: 16px !important; }
-    .mtp-feature { font-size: 14px !important; margin-bottom: 8px !important; }
-    .mtp-quote { font-size: 14px !important; margin-bottom: 16px !important; padding: 12px 0 !important; }
+  @media screen and (max-height: 800px) {
+    #mtp-container { max-height: 88vh !important; }
+    #mtp-content { min-height: 450px !important; }
+    .mtp-image-side { padding: 40px 35px !important; }
+    .mtp-slider-container { max-width: 340px !important; }
+    .mtp-text-side { padding: 50px 40px 40px !important; }
+    .mtp-glass-container { padding: 28px !important; }
+    .mtp-title { font-size: 28px !important; }
+    .mtp-subtitle { font-size: 15px !important; margin-bottom: 20px !important; }
+    .mtp-feature { font-size: 14px !important; margin-bottom: 10px !important; }
+    .mtp-quote { font-size: 14px !important; margin-bottom: 20px !important; }
     .mtp-buttons { gap: 10px !important; }
-    .mtp-btn { padding: 12px 16px !important; font-size: 13px !important; }
-    .mtp-trust { margin-top: 16px !important; gap: 6px !important; }
-    .mtp-trust-item { font-size: 11px !important; }
+    .mtp-btn { padding: 12px 18px !important; font-size: 13px !important; }
+    .mtp-trust { margin-top: 20px !important; gap: 8px !important; }
+    .mtp-trust-item { font-size: 12px !important; }
   }
 
-  @media screen and (max-height: 800px) and (min-width: 901px) {
-    #mtp-container {
-      max-height: 96vh !important;
-      overflow: hidden !important;
-    }
-    #mtp-content { min-height: auto !important; }
-    .mtp-image-side { padding: 30px 25px !important; }
+  @media screen and (max-height: 700px) {
+    #mtp-container { max-height: 85vh !important; }
+    #mtp-content { min-height: 400px !important; }
+    .mtp-image-side { padding: 35px 30px !important; }
     .mtp-slider-container { max-width: 280px !important; }
-    .mtp-text-side { padding: 40px 35px 30px !important; }
-    .mtp-glass-container { padding: 22px !important; }
-    .mtp-title { font-size: 24px !important; margin-bottom: 12px !important; }
-    .mtp-subtitle { font-size: 14px !important; margin-bottom: 14px !important; line-height: 1.5 !important; }
-    .mtp-features { margin-bottom: 14px !important; }
-    .mtp-feature { font-size: 13px !important; margin-bottom: 6px !important; padding-left: 26px !important; }
-    .mtp-feature::before { font-size: 14px !important; }
-    .mtp-quote { font-size: 13px !important; margin-bottom: 14px !important; padding: 10px 0 !important; }
-    .mtp-buttons { gap: 8px !important; }
-    .mtp-btn { padding: 10px 14px !important; font-size: 12px !important; border-radius: 12px !important; }
-    .mtp-trust { margin-top: 14px !important; gap: 5px !important; }
-    .mtp-trust-item { font-size: 11px !important; }
-    .mtp-lang-toggle { top: 18px !important; right: 65px !important; padding: 5px !important; }
-    .mtp-lang-btn { width: 36px !important; height: 26px !important; }
-    #mtp-close { top: 18px !important; right: 18px !important; width: 36px !important; height: 36px !important; font-size: 16px !important; }
-  }
-
-  @media screen and (max-height: 700px) and (min-width: 901px) {
-    #mtp-overlay { padding: 10px !important; }
-    #mtp-container {
-      max-height: 98vh !important;
-      overflow: hidden !important;
-      border-radius: 24px !important;
-    }
-    #mtp-content { min-height: auto !important; border-radius: 24px !important; }
-    .mtp-image-side { padding: 25px 20px !important; }
-    .mtp-slider-container { max-width: 240px !important; }
-    .mtp-slider { border-radius: 20px !important; }
-    .mtp-slide img { border-radius: 20px !important; }
-    .mtp-slider-dots { bottom: 10px !important; padding: 6px 12px !important; }
-    .mtp-dot { width: 24px !important; height: 5px !important; }
-    .mtp-text-side { padding: 35px 30px 25px !important; }
-    .mtp-glass-container { padding: 18px !important; border-radius: 20px !important; }
-    .mtp-eyebrow { font-size: 11px !important; margin-bottom: 8px !important; }
-    .mtp-title { font-size: 22px !important; margin-bottom: 10px !important; }
-    .mtp-subtitle { font-size: 13px !important; margin-bottom: 12px !important; line-height: 1.5 !important; }
-    .mtp-features { margin-bottom: 12px !important; }
-    .mtp-feature { font-size: 12px !important; margin-bottom: 5px !important; padding-left: 24px !important; }
-    .mtp-feature::before { font-size: 13px !important; }
-    .mtp-quote { display: none !important; }
-    .mtp-buttons { gap: 8px !important; }
-    .mtp-btn { padding: 9px 12px !important; font-size: 11px !important; border-radius: 10px !important; }
-    .mtp-btn-primary { padding: 10px 14px !important; }
-    .mtp-trust { margin-top: 12px !important; gap: 4px !important; }
-    .mtp-trust-item { font-size: 10px !important; }
-    .mtp-badge { font-size: 10px !important; padding: 7px 12px !important; top: 20px !important; left: 20px !important; }
-    .mtp-lang-toggle { top: 15px !important; right: 55px !important; padding: 4px !important; }
-    .mtp-lang-btn { width: 32px !important; height: 24px !important; padding: 5px 7px !important; }
-    .mtp-lang-btn img { width: 20px !important; height: 14px !important; }
-    #mtp-close { top: 15px !important; right: 15px !important; width: 32px !important; height: 32px !important; font-size: 15px !important; }
-  }
-
-  @media screen and (max-height: 620px) and (min-width: 901px) {
-    #mtp-overlay { padding: 5px !important; }
-    #mtp-container {
-      max-height: 99vh !important;
-      overflow: hidden !important;
-      border-radius: 20px !important;
-    }
-    #mtp-content { border-radius: 20px !important; }
-    .mtp-image-side { padding: 20px 15px !important; flex: 0 0 42% !important; }
-    .mtp-slider-container { max-width: 200px !important; }
-    .mtp-slider { border-radius: 16px !important; }
-    .mtp-slide img { border-radius: 16px !important; }
-    .mtp-slider-dots { bottom: 8px !important; padding: 5px 10px !important; gap: 5px !important; }
-    .mtp-dot { width: 20px !important; height: 4px !important; }
-    .mtp-text-side { padding: 28px 25px 20px !important; }
-    .mtp-glass-container { padding: 15px !important; border-radius: 16px !important; }
-    .mtp-eyebrow { font-size: 10px !important; margin-bottom: 6px !important; letter-spacing: 1.5px !important; }
-    .mtp-title { font-size: 18px !important; margin-bottom: 8px !important; line-height: 1.2 !important; }
-    .mtp-subtitle { font-size: 12px !important; margin-bottom: 10px !important; line-height: 1.4 !important; }
-    .mtp-features { margin-bottom: 10px !important; }
-    .mtp-feature { font-size: 11px !important; margin-bottom: 4px !important; padding-left: 20px !important; line-height: 1.3 !important; }
-    .mtp-feature::before { font-size: 11px !important; }
-    .mtp-quote { display: none !important; }
-    .mtp-buttons { gap: 6px !important; }
-    .mtp-btn { padding: 8px 10px !important; font-size: 10px !important; border-radius: 8px !important; }
-    .mtp-btn-primary { padding: 9px 12px !important; font-size: 11px !important; }
-    .mtp-trust { display: none !important; }
-    .mtp-badge { font-size: 9px !important; padding: 5px 10px !important; top: 15px !important; left: 15px !important; border-radius: 15px !important; }
-    .mtp-bg-game1 { opacity: 0.08 !important; }
-    .mtp-lang-toggle { top: 12px !important; right: 48px !important; padding: 3px !important; gap: 3px !important; }
-    .mtp-lang-btn { width: 28px !important; height: 22px !important; padding: 4px 6px !important; border-radius: 10px !important; }
-    .mtp-lang-btn img { width: 18px !important; height: 12px !important; }
-    #mtp-close { top: 12px !important; right: 12px !important; width: 28px !important; height: 28px !important; font-size: 14px !important; border-radius: 14px !important; }
+    .mtp-text-side { padding: 45px 35px 35px !important; }
+    .mtp-glass-container { padding: 24px !important; }
+    .mtp-title { font-size: 26px !important; margin-bottom: 16px !important; }
+    .mtp-subtitle { font-size: 14px !important; margin-bottom: 18px !important; }
+    .mtp-features { margin-bottom: 18px !important; }
+    .mtp-feature { font-size: 13px !important; margin-bottom: 8px !important; }
+    .mtp-quote { font-size: 13px !important; margin-bottom: 18px !important; }
+    .mtp-btn { padding: 11px 16px !important; font-size: 12px !important; }
+    .mtp-trust { margin-top: 18px !important; }
   }
 
   /* ========================================
