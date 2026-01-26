@@ -1165,9 +1165,35 @@
   // Mobile close button visibility logic
   var closeButtonRevealed = false;
   var closeButtonTimer = null;
+  var buttonsMovedToOverlay = false;
+  var originalButtonsParent = null;
 
   function isMobileView() {
     return window.matchMedia('(max-width: 600px)').matches;
+  }
+
+  // Move buttons outside glass container on mobile so position:fixed works
+  // (backdrop-filter creates new stacking context that breaks fixed positioning)
+  function setupMobileFloatingButtons() {
+    var buttons = document.querySelector('.mtp-buttons');
+    if (!buttons) return;
+
+    if (isMobileView() && !buttonsMovedToOverlay) {
+      // Save original parent for restoration
+      originalButtonsParent = buttons.parentNode;
+      // Move buttons to overlay (outside the glass container)
+      overlay.appendChild(buttons);
+      buttonsMovedToOverlay = true;
+    } else if (!isMobileView() && buttonsMovedToOverlay && originalButtonsParent) {
+      // Move buttons back to original location on desktop
+      var trustSection = originalButtonsParent.querySelector('.mtp-trust');
+      if (trustSection) {
+        originalButtonsParent.insertBefore(buttons, trustSection);
+      } else {
+        originalButtonsParent.appendChild(buttons);
+      }
+      buttonsMovedToOverlay = false;
+    }
   }
 
   function revealCloseButton() {
@@ -1224,7 +1250,15 @@
     startSlider();
     startSnow();
     setupMobileCloseButton();
+    setupMobileFloatingButtons();
   }
+
+  // Handle resize to move buttons appropriately
+  window.addEventListener('resize', function() {
+    if (overlay.classList.contains('mtp-active')) {
+      setupMobileFloatingButtons();
+    }
+  });
   
   function closePopup() {
     overlay.classList.remove('mtp-active');
