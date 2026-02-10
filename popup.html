@@ -26,6 +26,7 @@
     left: 0 !important;
     width: 100vw !important;
     height: 100vh !important;
+    height: 100dvh !important;
     background: linear-gradient(135deg, rgba(30, 40, 60, 0.45) 0%, rgba(60, 30, 50, 0.4) 50%, rgba(20, 40, 50, 0.45) 100%) !important;
     backdrop-filter: blur(12px) saturate(180%) !important;
     -webkit-backdrop-filter: blur(12px) saturate(180%) !important;
@@ -95,8 +96,7 @@
     max-width: 1100px !important;
     width: 95% !important;
     max-height: 92vh !important;
-    overflow-y: auto !important;
-    overflow-x: hidden !important;
+    overflow: hidden !important;
     border-radius: 36px !important;
     background: linear-gradient(145deg, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0.65) 50%, rgba(255, 255, 255, 0.75) 100%) !important;
     backdrop-filter: blur(30px) saturate(200%) !important;
@@ -697,289 +697,301 @@
 
   /* ========================================
      RESPONSIVE - SMALLER LAPTOPS (height-based)
+     NO SCROLLING - Hide elements to fit
      ======================================== */
   @media screen and (max-height: 800px) {
-    #mtp-container { max-height: 88vh !important; }
-    #mtp-content { min-height: 450px !important; }
-    .mtp-image-side { padding: 40px 35px !important; }
-    .mtp-slider-container { max-width: 340px !important; }
-    .mtp-text-side { padding: 50px 40px 40px !important; }
-    .mtp-glass-container { padding: 28px !important; }
-    .mtp-title { font-size: 28px !important; }
-    .mtp-subtitle { font-size: 15px !important; margin-bottom: 20px !important; }
-    .mtp-feature { font-size: 14px !important; margin-bottom: 10px !important; }
-    .mtp-quote { font-size: 14px !important; margin-bottom: 20px !important; }
+    #mtp-container { max-height: 90vh !important; overflow: hidden !important; }
+    #mtp-content { min-height: auto !important; overflow: hidden !important; }
+    .mtp-image-side { padding: 35px 30px !important; }
+    .mtp-slider-container { max-width: 300px !important; }
+    .mtp-text-side { padding: 45px 35px 35px !important; overflow: hidden !important; }
+    .mtp-glass-container { padding: 24px !important; overflow: hidden !important; }
+    .mtp-title { font-size: 26px !important; margin-bottom: 14px !important; }
+    .mtp-subtitle { font-size: 14px !important; margin-bottom: 16px !important; }
+    .mtp-feature { font-size: 13px !important; margin-bottom: 8px !important; }
+    .mtp-quote { display: none !important; }
     .mtp-buttons { gap: 10px !important; }
-    .mtp-btn { padding: 12px 18px !important; font-size: 13px !important; }
-    .mtp-trust { margin-top: 20px !important; gap: 8px !important; }
-    .mtp-trust-item { font-size: 12px !important; }
+    .mtp-btn { padding: 11px 16px !important; font-size: 13px !important; }
+    .mtp-trust { display: none !important; }
   }
 
   @media screen and (max-height: 700px) {
-    #mtp-container { max-height: 85vh !important; }
-    #mtp-content { min-height: 400px !important; }
-    .mtp-image-side { padding: 35px 30px !important; }
-    .mtp-slider-container { max-width: 280px !important; }
-    .mtp-text-side { padding: 45px 35px 35px !important; }
-    .mtp-glass-container { padding: 24px !important; }
-    .mtp-title { font-size: 26px !important; margin-bottom: 16px !important; }
-    .mtp-subtitle { font-size: 14px !important; margin-bottom: 18px !important; }
-    .mtp-features { margin-bottom: 18px !important; }
-    .mtp-feature { font-size: 13px !important; margin-bottom: 8px !important; }
-    .mtp-quote { font-size: 13px !important; margin-bottom: 18px !important; }
-    .mtp-btn { padding: 11px 16px !important; font-size: 12px !important; }
-    .mtp-trust { margin-top: 18px !important; }
+    #mtp-container { max-height: 92vh !important; }
+    .mtp-image-side { padding: 30px 25px !important; }
+    .mtp-slider-container { max-width: 240px !important; }
+    .mtp-text-side { padding: 40px 30px 30px !important; }
+    .mtp-glass-container { padding: 20px !important; }
+    .mtp-title { font-size: 24px !important; margin-bottom: 12px !important; }
+    .mtp-subtitle { font-size: 13px !important; margin-bottom: 14px !important; }
+    .mtp-features { margin-bottom: 14px !important; }
+    .mtp-feature { font-size: 12px !important; margin-bottom: 6px !important; }
+    .mtp-btn { padding: 10px 14px !important; font-size: 12px !important; }
   }
 
   /* ========================================
      RESPONSIVE - TABLET (601px - 900px)
+     NO SCROLLING - Content adapts to fit
      ======================================== */
   @media screen and (max-width: 900px) {
     #mtp-overlay {
       padding: 15px !important;
-      align-items: flex-start !important;
-      padding-top: 30px !important;
-      padding-bottom: 30px !important;
-      overflow-y: auto !important;
+      align-items: center !important;
+      overflow: hidden !important;
     }
-    
+
     #mtp-container {
-      max-height: none !important;
+      max-height: 96vh !important;
       border-radius: 28px !important;
+      overflow: hidden !important;
     }
-    
+
     #mtp-content {
-      flex-direction: column !important;
+      flex-direction: row !important;
       min-height: auto !important;
+      height: auto !important;
+      max-height: calc(96vh - 30px) !important;
       border-radius: 28px !important;
+      overflow: hidden !important;
     }
-    
+
     .mtp-image-side {
-      flex: none !important;
-      padding: 45px 40px 35px !important;
-      border-radius: 28px 28px 0 0 !important;
+      flex: 0 0 40% !important;
+      padding: 30px 25px !important;
+      border-radius: 28px 0 0 28px !important;
+      overflow: hidden !important;
     }
-    
-    .mtp-slider-container { max-width: 350px !important; }
-    .mtp-slider { border-radius: 20px !important; }
-    .mtp-slide img { border-radius: 20px !important; }
-    .mtp-bg-game1 { width: 50% !important; bottom: 10px !important; opacity: 0.10 !important; }
-    .mtp-badge { top: 25px !important; left: 25px !important; font-size: 11px !important; padding: 9px 16px !important; }
-    .mtp-text-side { padding: 40px 45px 45px !important; }
-    .mtp-glass-container { padding: 28px !important; }
-    .mtp-title { font-size: 30px !important; }
-    .mtp-subtitle { font-size: 16px !important; }
-    .mtp-buttons { flex-wrap: nowrap !important; gap: 12px !important; }
-    .mtp-btn { flex: 1 !important; padding: 14px 16px !important; font-size: 13px !important; }
-    .mtp-trust { flex-wrap: wrap !important; gap: 15px !important; }
-    .mtp-lang-toggle { right: 68px !important; top: 18px !important; }
-    #mtp-close { width: 36px !important; height: 36px !important; font-size: 16px !important; }
+
+    .mtp-slider-container { max-width: 220px !important; }
+    .mtp-slider { border-radius: 18px !important; }
+    .mtp-slide img { border-radius: 18px !important; }
+    .mtp-bg-game1 { display: none !important; }
+    .mtp-badge { top: 20px !important; left: 20px !important; font-size: 10px !important; padding: 7px 12px !important; }
+    .mtp-text-side { padding: 30px 30px 25px !important; overflow: hidden !important; }
+    .mtp-text-side::before { display: none !important; }
+    .mtp-glass-container { padding: 22px !important; overflow: hidden !important; }
+    .mtp-glass-container::before { display: none !important; }
+    .mtp-glass-container::after { display: none !important; }
+    .mtp-title { font-size: 24px !important; margin-bottom: 12px !important; }
+    .mtp-subtitle { font-size: 14px !important; margin-bottom: 16px !important; }
+    .mtp-features { margin-bottom: 16px !important; }
+    .mtp-feature { font-size: 13px !important; margin-bottom: 8px !important; }
+    .mtp-quote { display: none !important; }
+    .mtp-buttons { flex-wrap: nowrap !important; gap: 10px !important; }
+    .mtp-btn { flex: 1 !important; padding: 12px 14px !important; font-size: 12px !important; }
+    .mtp-trust { display: none !important; }
+    .mtp-lang-toggle { right: 60px !important; top: 16px !important; }
+    #mtp-close { width: 34px !important; height: 34px !important; font-size: 15px !important; top: 16px !important; right: 16px !important; }
   }
   
   /* ========================================
      RESPONSIVE - MOBILE (max 600px)
+     NO SCROLLING - Everything fits in viewport
      ======================================== */
   @media screen and (max-width: 600px) {
     #mtp-overlay {
       padding: 0 !important;
-      align-items: flex-start !important;
-      background: rgba(20, 40, 60, 0.4) !important;
-      overflow-y: auto !important;
+      align-items: stretch !important;
+      background: linear-gradient(165deg, rgba(253, 248, 252, 0.98) 0%, rgba(250, 245, 250, 0.95) 50%, rgba(248, 242, 248, 0.98) 100%) !important;
+      overflow: hidden !important;
     }
 
     /* Snow enabled on mobile */
     #mtp-snow { display: block !important; }
     #mtp-snow.active { display: block !important; }
-    #mtp-snow .flake { font-size: 10px !important; opacity: 0.6 !important; }
+    #mtp-snow .flake { font-size: 10px !important; opacity: 0.5 !important; }
 
-    /* Close button hidden initially on mobile - shown after delay or scroll */
+    /* Close button always visible on mobile */
     #mtp-close.mtp-close-hidden {
-      opacity: 0 !important;
-      pointer-events: none !important;
-      transform: scale(0.8) !important;
+      opacity: 1 !important;
+      pointer-events: auto !important;
+      transform: scale(1) !important;
     }
 
-    #mtp-close {
-      transition: all 0.3s ease !important;
-    }
-    
     #mtp-container {
       width: 100% !important;
       max-width: 100% !important;
-      min-height: 100vh !important;
-      min-height: 100dvh !important;
-      max-height: none !important;
+      height: 100vh !important;
+      height: 100dvh !important;
+      max-height: 100vh !important;
+      max-height: 100dvh !important;
       border-radius: 0 !important;
-      overflow-y: auto !important;
-      -webkit-overflow-scrolling: touch !important;
+      overflow: hidden !important;
+      display: flex !important;
+      flex-direction: column !important;
+      background: transparent !important;
     }
-    
+
     #mtp-content {
       flex-direction: column !important;
-      min-height: 100vh !important;
-      min-height: 100dvh !important;
+      height: 100% !important;
+      min-height: 0 !important;
       border-radius: 0 !important;
+      overflow: hidden !important;
     }
-    
+
+    /* Hide image side completely on mobile - show only text */
     .mtp-image-side {
-      flex: none !important;
-      padding: 70px 25px 30px !important;
-      border-radius: 0 !important;
-      min-height: 320px !important;
+      display: none !important;
     }
-    
-    .mtp-slider-container { max-width: 280px !important; }
-    .mtp-slider { border-radius: 18px !important; box-shadow: 0 20px 45px rgba(0,0,0,0.15), 0 8px 20px rgba(226, 1, 123, 0.12) !important; }
-    .mtp-slide img { border-radius: 18px !important; }
-    .mtp-slider-dots { bottom: 12px !important; padding: 8px 14px !important; gap: 6px !important; }
-    .mtp-dot { width: 24px !important; height: 5px !important; }
-    .mtp-bg-game1 { width: 45% !important; bottom: 8px !important; opacity: 0.08 !important; }
-    .mtp-badge { top: 18px !important; left: 18px !important; font-size: 10px !important; padding: 7px 14px !important; letter-spacing: 1.2px !important; border-radius: 20px !important; }
-    .mtp-lang-toggle { top: 18px !important; right: 64px !important; padding: 4px !important; gap: 4px !important; }
+
+    /* Language toggle moves to top of text side */
+    .mtp-lang-toggle {
+      position: absolute !important;
+      top: 12px !important;
+      left: 16px !important;
+      right: auto !important;
+      z-index: 100 !important;
+    }
     .mtp-lang-btn { width: 32px !important; height: 24px !important; padding: 4px 6px !important; }
     .mtp-lang-btn img { width: 20px !important; height: 14px !important; }
 
     #mtp-close {
-      position: fixed !important;
-      top: 18px !important;
-      right: 15px !important;
+      position: absolute !important;
+      top: 12px !important;
+      right: 16px !important;
       width: 36px !important;
       height: 36px !important;
       padding: 0 !important;
-      font-size: 16px !important;
-      background: rgba(255, 255, 255, 0.8) !important;
+      font-size: 18px !important;
+      background: rgba(255, 255, 255, 0.9) !important;
       backdrop-filter: blur(15px) saturate(180%) !important;
       -webkit-backdrop-filter: blur(15px) saturate(180%) !important;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1), inset 0 0 0 1px rgba(255,255,255,0.5), inset 0 1px 0 rgba(255,255,255,0.8) !important;
-      z-index: 9999 !important;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1) !important;
+      z-index: 100 !important;
       border-radius: 18px !important;
       color: #666 !important;
     }
-    
-    #mtp-close:active { background: rgba(226, 1, 123, 0.1) !important; color: #e2017b !important; }
-    .mtp-text-side { flex: 1 !important; padding: 30px 22px 40px !important; }
-    .mtp-text-side::before { opacity: 0.08 !important; background-size: 160% !important; }
-    .mtp-glass-container { padding: 24px 20px !important; border-radius: 20px !important; }
-    .mtp-eyebrow { font-size: 11px !important; letter-spacing: 2px !important; margin-bottom: 10px !important; }
-    .mtp-title { font-size: 24px !important; margin-bottom: 16px !important; line-height: 1.3 !important; }
-    .mtp-title span { display: block !important; }
-    .mtp-subtitle { font-size: 15px !important; margin-bottom: 24px !important; line-height: 1.7 !important; }
-    .mtp-features { margin-bottom: 24px !important; }
-    .mtp-feature { font-size: 14px !important; margin-bottom: 14px !important; padding-left: 28px !important; }
-    .mtp-feature::before { font-size: 15px !important; top: -1px !important; }
-    .mtp-quote { font-size: 14px !important; padding: 16px 0 !important; margin-bottom: 28px !important; }
-    .mtp-buttons { flex-direction: row !important; flex-wrap: wrap !important; gap: 10px !important; }
-    .mtp-btn { width: auto !important; padding: 14px 20px !important; font-size: 15px !important; border-radius: 12px !important; -webkit-tap-highlight-color: transparent !important; }
-    .mtp-btn-primary { padding: 16px 20px !important; font-size: 16px !important; font-weight: 700 !important; box-shadow: 0 4px 12px rgba(226, 1, 123, 0.25) !important; }
-    .mtp-btn-primary:active { filter: brightness(0.92) !important; transform: scale(0.98) !important; }
-    .mtp-btn-secondary { padding: 12px 20px !important; font-size: 14px !important; background: rgba(255,255,255,0.9) !important; border: 1.5px solid rgba(180, 30, 50, 0.2) !important; }
-    .mtp-btn-secondary:active { background: rgba(180, 30, 50, 0.08) !important; transform: scale(0.98) !important; }
-    .mtp-trust { flex-direction: column !important; align-items: center !important; gap: 10px !important; margin-top: 28px !important; padding-top: 0 !important; text-align: center !important; }
-    .mtp-trust-item { font-size: 13px !important; justify-content: center !important; }
-    .mtp-trust-icon { font-size: 14px !important; }
+    #mtp-close:active { background: rgba(226, 1, 123, 0.15) !important; color: #e2017b !important; }
 
-    /* Floating buttons at bottom on mobile */
-    .mtp-buttons {
-      position: fixed !important;
-      bottom: 0 !important;
-      left: 0 !important;
-      right: 0 !important;
-      z-index: 10000 !important;
-      background: rgba(255,255,255,0.97) !important;
-      padding: 16px 20px !important;
-      padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px)) !important;
-      margin: 0 !important;
-      gap: 10px !important;
-      backdrop-filter: blur(20px) saturate(180%) !important;
-      -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
-      box-shadow: 0 -4px 20px rgba(0,0,0,0.1), 0 -1px 0 rgba(0,0,0,0.05) !important;
-      border-top: 1px solid rgba(255,255,255,0.8) !important;
-      flex-wrap: wrap !important;
-    }
-
-    /* Primary button takes full width, secondary buttons side by side */
-    .mtp-btn-primary { flex: 1 1 100% !important; order: -1 !important; }
-    .mtp-btn-secondary { flex: 1 1 calc(50% - 5px) !important; min-width: 0 !important; }
-
-    /* Extra padding at bottom of glass container to allow scrolling past floating buttons */
-    .mtp-glass-container {
-      padding-bottom: 24px !important;
-      margin-bottom: 160px !important;
-    }
-
-    /* Extra margin at bottom of text side for scroll space */
     .mtp-text-side {
-      padding-bottom: calc(180px + env(safe-area-inset-bottom, 0px)) !important;
+      flex: 1 !important;
+      display: flex !important;
+      flex-direction: column !important;
+      padding: 60px 20px 0 20px !important;
+      padding-bottom: env(safe-area-inset-bottom, 0px) !important;
+      overflow: hidden !important;
+      background: transparent !important;
     }
+    .mtp-text-side::before { display: none !important; }
+    .mtp-text-side::after { display: none !important; }
+
+    .mtp-glass-container {
+      flex: 1 !important;
+      display: flex !important;
+      flex-direction: column !important;
+      padding: 20px !important;
+      border-radius: 24px 24px 0 0 !important;
+      overflow: hidden !important;
+      background: rgba(255, 255, 255, 0.95) !important;
+      margin: 0 !important;
+    }
+    .mtp-glass-container::before { display: none !important; }
+    .mtp-glass-container::after { display: none !important; }
+
+    .mtp-eyebrow { font-size: 10px !important; letter-spacing: 2px !important; margin-bottom: 8px !important; }
+    .mtp-title { font-size: 22px !important; margin-bottom: 12px !important; line-height: 1.25 !important; }
+    .mtp-title span { display: inline !important; }
+    .mtp-subtitle { font-size: 14px !important; margin-bottom: 16px !important; line-height: 1.5 !important; }
+
+    /* Hide features and quote on mobile to save space */
+    .mtp-features { display: none !important; }
+    .mtp-quote { display: none !important; }
+    .mtp-trust { display: none !important; }
+
+    /* Buttons - normal flow at bottom, not floating */
+    .mtp-buttons {
+      margin-top: auto !important;
+      padding: 16px 0 !important;
+      padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px)) !important;
+      flex-direction: column !important;
+      gap: 10px !important;
+      background: transparent !important;
+      position: static !important;
+      box-shadow: none !important;
+      border: none !important;
+    }
+
+    .mtp-btn {
+      width: 100% !important;
+      padding: 14px 20px !important;
+      font-size: 15px !important;
+      border-radius: 12px !important;
+      -webkit-tap-highlight-color: transparent !important;
+    }
+    .mtp-btn-primary {
+      padding: 16px 20px !important;
+      font-size: 16px !important;
+      font-weight: 700 !important;
+      box-shadow: 0 4px 15px rgba(226, 1, 123, 0.3) !important;
+      order: -1 !important;
+    }
+    .mtp-btn-primary:active { filter: brightness(0.92) !important; transform: scale(0.98) !important; }
+    .mtp-btn-secondary {
+      padding: 12px 20px !important;
+      font-size: 14px !important;
+      background: rgba(255,255,255,0.95) !important;
+      border: 1.5px solid rgba(180, 30, 50, 0.2) !important;
+    }
+    .mtp-btn-secondary:active { background: rgba(180, 30, 50, 0.08) !important; transform: scale(0.98) !important; }
   }
-  
+
   /* ========================================
      RESPONSIVE - SMALL MOBILE (max 380px)
      ======================================== */
   @media screen and (max-width: 380px) {
-    .mtp-image-side { padding: 65px 20px 25px !important; min-height: 290px !important; }
-    .mtp-slider-container { max-width: 230px !important; }
-    .mtp-badge { font-size: 9px !important; padding: 6px 12px !important; top: 15px !important; left: 15px !important; }
-    #mtp-close { top: 14px !important; right: 12px !important; width: 32px !important; height: 32px !important; font-size: 15px !important; }
-    .mtp-lang-toggle { right: 52px !important; top: 14px !important; padding: 3px !important; gap: 3px !important; }
-    .mtp-lang-btn { width: 28px !important; height: 22px !important; padding: 3px 5px !important; }
+    .mtp-lang-toggle { top: 10px !important; left: 12px !important; }
+    .mtp-lang-btn { width: 28px !important; height: 22px !important; }
     .mtp-lang-btn img { width: 18px !important; height: 12px !important; }
-    .mtp-text-side { padding: 25px 18px calc(180px + env(safe-area-inset-bottom, 0px)) !important; }
-    .mtp-glass-container { padding: 20px 16px 20px !important; margin-bottom: 150px !important; }
-    .mtp-title { font-size: 21px !important; }
-    .mtp-subtitle { font-size: 14px !important; }
-    .mtp-feature { font-size: 13px !important; }
-    .mtp-quote { font-size: 13px !important; }
-    .mtp-btn { font-size: 14px !important; padding: 14px 20px !important; }
-    .mtp-btn-primary { font-size: 15px !important; padding: 16px 20px !important; }
-    /* Floating buttons adjustments for small screens */
-    .mtp-buttons {
-      padding: 12px 15px !important;
-      padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px)) !important;
-    }
-  }
-  
-  /* ========================================
-     LANDSCAPE MOBILE
-     ======================================== */
-  @media screen and (max-width: 900px) and (max-height: 500px) and (orientation: landscape) {
-    #mtp-overlay { padding: 10px !important; align-items: center !important; }
-    #mtp-snow { display: none !important; }
-    #mtp-container { min-height: auto !important; max-height: 95vh !important; overflow-y: auto !important; border-radius: 20px !important; }
-    #mtp-content { flex-direction: row !important; min-height: auto !important; border-radius: 20px !important; }
-    .mtp-image-side { flex: 0 0 40% !important; padding: 25px 20px !important; border-radius: 20px 0 0 20px !important; min-height: auto !important; }
-    .mtp-slider-container { max-width: 180px !important; }
-    .mtp-slider-dots { bottom: 8px !important; padding: 6px 10px !important; gap: 4px !important; }
-    .mtp-dot { width: 20px !important; height: 4px !important; }
-    .mtp-badge { top: 12px !important; left: 12px !important; font-size: 8px !important; padding: 5px 10px !important; }
-    #mtp-close { position: absolute !important; top: 10px !important; right: 10px !important; width: 32px !important; height: 32px !important; font-size: 15px !important; }
-    .mtp-lang-toggle { right: 48px !important; top: 10px !important; padding: 3px !important; gap: 3px !important; }
-    .mtp-lang-btn { width: 28px !important; height: 22px !important; padding: 3px 5px !important; }
-    .mtp-lang-btn img { width: 18px !important; height: 12px !important; }
-    .mtp-text-side { padding: 25px 25px 25px 20px !important; }
-    .mtp-glass-container { padding: 18px !important; }
+    #mtp-close { top: 10px !important; right: 12px !important; width: 32px !important; height: 32px !important; font-size: 16px !important; }
+    .mtp-text-side { padding: 55px 16px 0 16px !important; }
+    .mtp-glass-container { padding: 16px !important; border-radius: 20px 20px 0 0 !important; }
     .mtp-eyebrow { font-size: 9px !important; margin-bottom: 6px !important; }
     .mtp-title { font-size: 20px !important; margin-bottom: 10px !important; }
-    .mtp-subtitle { font-size: 13px !important; margin-bottom: 15px !important; line-height: 1.5 !important; }
-    .mtp-features { margin-bottom: 15px !important; }
-    .mtp-feature { font-size: 12px !important; margin-bottom: 8px !important; padding-left: 22px !important; }
-    .mtp-feature::before { font-size: 12px !important; }
-    .mtp-quote { display: none !important; }
-    .mtp-buttons {
-      position: static !important;
-      flex-direction: row !important;
-      gap: 8px !important;
-      background: transparent !important;
-      box-shadow: none !important;
-      border-top: none !important;
-      padding: 0 !important;
-      backdrop-filter: none !important;
-      -webkit-backdrop-filter: none !important;
+    .mtp-subtitle { font-size: 13px !important; margin-bottom: 14px !important; }
+    .mtp-btn { font-size: 14px !important; padding: 12px 16px !important; }
+    .mtp-btn-primary { font-size: 15px !important; padding: 14px 16px !important; }
+    .mtp-buttons { gap: 8px !important; padding: 12px 0 !important; }
+  }
+
+  /* ========================================
+     LANDSCAPE MOBILE - NO SCROLLING
+     ======================================== */
+  @media screen and (max-width: 900px) and (max-height: 500px) and (orientation: landscape) {
+    #mtp-overlay { padding: 10px !important; align-items: center !important; overflow: hidden !important; }
+    #mtp-snow { display: none !important; }
+    #mtp-container {
+      min-height: auto !important;
+      max-height: 95vh !important;
+      height: auto !important;
+      overflow: hidden !important;
+      border-radius: 20px !important;
     }
-    .mtp-btn { padding: 10px 14px !important; font-size: 12px !important; }
+    #mtp-content { flex-direction: row !important; min-height: auto !important; height: auto !important; border-radius: 20px !important; overflow: hidden !important; }
+    .mtp-image-side { display: flex !important; flex: 0 0 35% !important; padding: 20px 15px !important; border-radius: 20px 0 0 20px !important; min-height: auto !important; }
+    .mtp-slider-container { max-width: 140px !important; }
+    .mtp-slider-dots { bottom: 6px !important; padding: 4px 8px !important; gap: 3px !important; }
+    .mtp-dot { width: 16px !important; height: 3px !important; }
+    .mtp-badge { display: none !important; }
+    .mtp-bg-game1 { display: none !important; }
+    #mtp-close { position: absolute !important; top: 8px !important; right: 8px !important; width: 28px !important; height: 28px !important; font-size: 14px !important; }
+    .mtp-lang-toggle { right: 42px !important; top: 8px !important; padding: 2px !important; gap: 2px !important; }
+    .mtp-lang-btn { width: 24px !important; height: 18px !important; padding: 2px 4px !important; }
+    .mtp-lang-btn img { width: 16px !important; height: 11px !important; }
+    .mtp-text-side { padding: 15px 15px 15px 10px !important; overflow: hidden !important; }
+    .mtp-text-side::before { display: none !important; }
+    .mtp-text-side::after { display: none !important; }
+    .mtp-glass-container { padding: 12px !important; overflow: hidden !important; }
+    .mtp-glass-container::before { display: none !important; }
+    .mtp-glass-container::after { display: none !important; }
+    .mtp-eyebrow { display: none !important; }
+    .mtp-title { font-size: 16px !important; margin-bottom: 6px !important; }
+    .mtp-subtitle { font-size: 11px !important; margin-bottom: 10px !important; line-height: 1.4 !important; }
+    .mtp-features { display: none !important; }
+    .mtp-quote { display: none !important; }
+    .mtp-buttons { flex-direction: row !important; gap: 6px !important; flex-wrap: nowrap !important; }
+    .mtp-btn { padding: 8px 12px !important; font-size: 11px !important; flex: 1 !important; white-space: nowrap !important; }
+    .mtp-btn-primary { order: 0 !important; }
     .mtp-trust { display: none !important; }
-    .mtp-glass-container { padding-bottom: 18px !important; margin-bottom: 0 !important; }
-    .mtp-text-side { padding-bottom: 25px !important; }
   }
 </style>
 
