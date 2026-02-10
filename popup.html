@@ -868,12 +868,12 @@
     .mtp-feature { font-size: 14px !important; margin-bottom: 14px !important; padding-left: 28px !important; }
     .mtp-feature::before { font-size: 15px !important; top: -1px !important; }
     .mtp-quote { font-size: 14px !important; padding: 16px 0 !important; margin-bottom: 28px !important; }
-    .mtp-buttons { flex-direction: column !important; gap: 12px !important; }
-    .mtp-btn { width: 100% !important; padding: 16px 24px !important; font-size: 15px !important; border-radius: 12px !important; -webkit-tap-highlight-color: transparent !important; }
-    .mtp-btn-primary { padding: 18px 24px !important; font-size: 16px !important; box-shadow: 0 4px 15px rgba(226, 1, 123, 0.3) !important; }
-    .mtp-btn-primary:active { filter: brightness(0.95) !important; }
-    .mtp-btn-secondary { padding: 14px 24px !important; border-width: 2px !important; }
-    .mtp-btn-secondary:active { background: rgba(180, 30, 50, 0.12) !important; }
+    .mtp-buttons { flex-direction: row !important; flex-wrap: wrap !important; gap: 10px !important; }
+    .mtp-btn { width: auto !important; padding: 14px 20px !important; font-size: 15px !important; border-radius: 12px !important; -webkit-tap-highlight-color: transparent !important; }
+    .mtp-btn-primary { padding: 16px 20px !important; font-size: 16px !important; font-weight: 700 !important; box-shadow: 0 4px 12px rgba(226, 1, 123, 0.25) !important; }
+    .mtp-btn-primary:active { filter: brightness(0.92) !important; transform: scale(0.98) !important; }
+    .mtp-btn-secondary { padding: 12px 20px !important; font-size: 14px !important; background: rgba(255,255,255,0.9) !important; border: 1.5px solid rgba(180, 30, 50, 0.2) !important; }
+    .mtp-btn-secondary:active { background: rgba(180, 30, 50, 0.08) !important; transform: scale(0.98) !important; }
     .mtp-trust { flex-direction: column !important; align-items: center !important; gap: 10px !important; margin-top: 28px !important; padding-top: 0 !important; text-align: center !important; }
     .mtp-trust-item { font-size: 13px !important; justify-content: center !important; }
     .mtp-trust-icon { font-size: 14px !important; }
@@ -885,24 +885,31 @@
       left: 0 !important;
       right: 0 !important;
       z-index: 10000 !important;
-      background: linear-gradient(0deg, rgba(255,255,255,0.98) 0%, rgba(255,255,255,0.95) 85%, rgba(255,255,255,0) 100%) !important;
-      padding: 20px 20px 25px 20px !important;
+      background: rgba(255,255,255,0.97) !important;
+      padding: 16px 20px !important;
+      padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px)) !important;
       margin: 0 !important;
       gap: 10px !important;
-      backdrop-filter: blur(10px) !important;
-      -webkit-backdrop-filter: blur(10px) !important;
-      box-shadow: 0 -5px 30px rgba(0,0,0,0.08) !important;
+      backdrop-filter: blur(20px) saturate(180%) !important;
+      -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.1), 0 -1px 0 rgba(0,0,0,0.05) !important;
+      border-top: 1px solid rgba(255,255,255,0.8) !important;
+      flex-wrap: wrap !important;
     }
+
+    /* Primary button takes full width, secondary buttons side by side */
+    .mtp-btn-primary { flex: 1 1 100% !important; order: -1 !important; }
+    .mtp-btn-secondary { flex: 1 1 calc(50% - 5px) !important; min-width: 0 !important; }
 
     /* Extra padding at bottom of glass container to allow scrolling past floating buttons */
     .mtp-glass-container {
-      padding-bottom: 180px !important;
-      margin-bottom: 0 !important;
+      padding-bottom: 24px !important;
+      margin-bottom: 160px !important;
     }
 
     /* Extra margin at bottom of text side for scroll space */
     .mtp-text-side {
-      padding-bottom: 200px !important;
+      padding-bottom: calc(180px + env(safe-area-inset-bottom, 0px)) !important;
     }
   }
   
@@ -917,8 +924,8 @@
     .mtp-lang-toggle { right: 52px !important; top: 14px !important; padding: 3px !important; gap: 3px !important; }
     .mtp-lang-btn { width: 28px !important; height: 22px !important; padding: 3px 5px !important; }
     .mtp-lang-btn img { width: 18px !important; height: 12px !important; }
-    .mtp-text-side { padding: 25px 18px 200px !important; }
-    .mtp-glass-container { padding: 20px 16px 180px !important; }
+    .mtp-text-side { padding: 25px 18px calc(180px + env(safe-area-inset-bottom, 0px)) !important; }
+    .mtp-glass-container { padding: 20px 16px 20px !important; margin-bottom: 150px !important; }
     .mtp-title { font-size: 21px !important; }
     .mtp-subtitle { font-size: 14px !important; }
     .mtp-feature { font-size: 13px !important; }
@@ -926,7 +933,10 @@
     .mtp-btn { font-size: 14px !important; padding: 14px 20px !important; }
     .mtp-btn-primary { font-size: 15px !important; padding: 16px 20px !important; }
     /* Floating buttons adjustments for small screens */
-    .mtp-buttons { padding: 15px 15px 20px 15px !important; }
+    .mtp-buttons {
+      padding: 12px 15px !important;
+      padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px)) !important;
+    }
   }
   
   /* ========================================
@@ -955,9 +965,21 @@
     .mtp-feature { font-size: 12px !important; margin-bottom: 8px !important; padding-left: 22px !important; }
     .mtp-feature::before { font-size: 12px !important; }
     .mtp-quote { display: none !important; }
-    .mtp-buttons { flex-direction: row !important; gap: 8px !important; }
+    .mtp-buttons {
+      position: static !important;
+      flex-direction: row !important;
+      gap: 8px !important;
+      background: transparent !important;
+      box-shadow: none !important;
+      border-top: none !important;
+      padding: 0 !important;
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+    }
     .mtp-btn { padding: 10px 14px !important; font-size: 12px !important; }
     .mtp-trust { display: none !important; }
+    .mtp-glass-container { padding-bottom: 18px !important; margin-bottom: 0 !important; }
+    .mtp-text-side { padding-bottom: 25px !important; }
   }
 </style>
 
