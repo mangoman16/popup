@@ -120,7 +120,7 @@
     flex-direction: row !important;
     overflow: hidden !important;
     border-radius: 36px !important;
-    min-height: 500px !important;
+    min-height: 0 !important;
   }
   
   /* Language Toggle */
@@ -688,7 +688,7 @@
      ======================================== */
   @media screen and (min-width: 1400px) {
     #mtp-container { max-width: 1200px !important; }
-    #mtp-content { min-height: 620px !important; }
+    #mtp-content { min-height: 0 !important; }
     .mtp-slider-container { max-width: 460px !important; }
     .mtp-title { font-size: 38px !important; }
     .mtp-subtitle { font-size: 18px !important; }
@@ -700,7 +700,7 @@
      ======================================== */
   @media screen and (max-height: 800px) {
     #mtp-container { max-height: 88vh !important; }
-    #mtp-content { min-height: 450px !important; }
+    #mtp-content { min-height: 0 !important; }
     .mtp-image-side { padding: 40px 35px !important; }
     .mtp-slider-container { max-width: 340px !important; }
     .mtp-text-side { padding: 50px 40px 40px !important; }
@@ -717,7 +717,7 @@
 
   @media screen and (max-height: 700px) {
     #mtp-container { max-height: 85vh !important; }
-    #mtp-content { min-height: 400px !important; }
+    #mtp-content { min-height: 0 !important; }
     .mtp-image-side { padding: 35px 30px !important; }
     .mtp-slider-container { max-width: 280px !important; }
     .mtp-text-side { padding: 45px 35px 35px !important; }
@@ -802,7 +802,7 @@
      ======================================== */
   @media screen and (max-width: 600px) {
     #mtp-overlay {
-      padding: 0 !important;
+      padding: 12px !important;
       height: 100vh !important;
       height: 100dvh !important;
       overflow: hidden !important;
@@ -835,20 +835,18 @@
     #mtp-container {
       width: 100% !important;
       max-width: 100% !important;
-      height: 100vh !important;
-      height: 100dvh !important;
-      max-height: 100vh !important;
-      max-height: 100dvh !important;
+      height: auto !important;
+      max-height: calc(100dvh - 24px) !important;
       min-height: 0 !important;
-      border-radius: 0 !important;
+      border-radius: 24px !important;
       overflow: hidden !important;
     }
 
     #mtp-content {
       flex-direction: column !important;
-      height: 100% !important;
+      height: auto !important;
       min-height: 0 !important;
-      border-radius: 0 !important;
+      border-radius: 24px !important;
       overflow: hidden !important;
     }
 
@@ -858,17 +856,17 @@
     }
 
     .mtp-text-side {
-      flex: 1 !important;
+      flex: 0 1 auto !important;
       display: flex !important;
       flex-direction: column !important;
-      padding: 55px 20px 0 20px !important;
+      padding: 55px 20px 20px 20px !important;
       overflow: hidden !important;
     }
 
     .mtp-text-side::before { opacity: 0.08 !important; background-size: 160% !important; }
 
     .mtp-glass-container {
-      flex: 1 !important;
+      flex: 0 1 auto !important;
       display: flex !important;
       flex-direction: column !important;
       padding: 24px 20px !important;
@@ -933,7 +931,7 @@
      RESPONSIVE - SMALL MOBILE (max 380px)
      ======================================== */
   @media screen and (max-width: 380px) {
-    .mtp-text-side { padding: 50px 16px 0 16px !important; }
+    .mtp-text-side { padding: 50px 16px 16px 16px !important; }
     .mtp-glass-container {
       padding: 20px 16px !important;
       padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px)) !important;
