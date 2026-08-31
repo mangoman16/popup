@@ -1,1285 +1,1455 @@
 <!--THE CONTENT OF THIS FILE WILL BE APPENDED TO EVERY PAGE JUST BEFORE THE CLOSE TAG OF THE </BODY> ELEMENT-->
 <!-- Mon Tresor Popup - START -->
-<!-- Mon Tresor Popup - Enhanced with Language Toggle, Slider & Christmas Theme -->
+<!-- Fullscreen takeover · 4 automatic seasonal themes · bilingual (DE/EN) · never scrolls -->
 <!-- In IONOS: "Website" > "Einstellungen" > "Kopf-/Fußbereich bearbeiten" > "Body (Ende)" -->
+<!--
+  ==========================================================================
+  QUICK REFERENCE
+  ==========================================================================
+  Themes switch automatically from the visitor's date (meteorological
+  seasons, northern hemisphere):
 
+      Spring  1 Mar - 31 May      fresh green / blossom  · petals
+      Summer  1 Jun - 31 Aug      amber / turquoise      · light motes
+      Autumn  1 Sep - 30 Nov      rust / gold            · falling leaves
+      Winter  1 Dec - 28/29 Feb   ice blue / silver      · snow
+                                  (December also turns festive: red/green)
+
+  To preview a theme, add a parameter to any page URL:
+      ?mtpTheme=spring      (spring | summer | autumn | winter | festive)
+      ?mtpForce=1           show the popup again in the same session
+
+  Texts, links and season labels live in the CONTENT block in the script at
+  the bottom of this file - that is the only place you need to edit copy.
+  Colours live in the THEMES block in the CSS right below.
+  ==========================================================================
+-->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap" rel="stylesheet">
 
 <style>
-  /* ========================================
-     MON TRESOR POPUP - ENHANCED VERSION
-     ======================================== */
-  
-  @keyframes mtpFadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
-  
-  @keyframes mtpSlideIn {
-    from { opacity: 0; transform: translateY(30px) scale(0.98); }
-    to { opacity: 1; transform: translateY(0) scale(1); }
+  /* ==========================================================================
+     1. DESIGN TOKENS
+     Everything scales from the viewport, so the popup keeps the same
+     proportions on a phone, a laptop and a 4K screen - and stays correct at
+     any browser zoom level, because vw/vh follow the zoomed viewport.
+     ========================================================================== */
+
+  #mtp-root {
+    /* Viewport units. --mtp-vh uses the *small* viewport (svh) where it is
+       supported, so mobile browser toolbars can never push content out of
+       view. Sizing maths below multiplies these instead of using vw/vh
+       directly, which keeps one single place to adjust. */
+    --mtp-vw: 1vw;
+    --mtp-vh: 1vh;
+
+    --mtp-font: 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+
+    /* Fluid spacing */
+    --mtp-pad:   clamp(16px, calc(var(--mtp-vw) * 1.6 + var(--mtp-vh) * 1.2), 46px);
+    --mtp-gap:   clamp(8px,  calc(var(--mtp-vw) * 0.35 + var(--mtp-vh) * 0.85), 20px);
+    --mtp-r:     clamp(14px, calc(var(--mtp-vh) * 2.2), 26px);
+    --mtp-r-sm:  clamp(10px, calc(var(--mtp-vh) * 1.4), 16px);
+    --mtp-ctl:   clamp(34px, calc(var(--mtp-vh) * 4.6), 46px);
+
+    /* Fluid type */
+    --mtp-fs-title: clamp(21px,   calc(var(--mtp-vw) * 1.05 + var(--mtp-vh) * 1.5  + 6px),   42px);
+    --mtp-fs-body:  clamp(13.5px, calc(var(--mtp-vw) * 0.3  + var(--mtp-vh) * 0.72 + 4px),   17.5px);
+    --mtp-fs-btn:   clamp(13px,   calc(var(--mtp-vw) * 0.26 + var(--mtp-vh) * 0.6  + 4px),   16px);
+    --mtp-fs-sm:    clamp(11.5px, calc(var(--mtp-vw) * 0.24 + var(--mtp-vh) * 0.55 + 3.5px), 14.5px);
+    --mtp-fs-xs:    clamp(10px,   calc(var(--mtp-vw) * 0.2  + var(--mtp-vh) * 0.42 + 3px),   12.5px);
+
+    /* Brand constant - the magenta stays across every season */
+    --mtp-brand: #e2017b;
+
+    /* Neutral surfaces */
+    --mtp-card:  rgba(255, 255, 255, 0.72);
+    --mtp-card2: rgba(255, 255, 255, 0.46);
   }
 
-  #mtp-overlay {
+  @supports (height: 1svh) {
+    #mtp-root { --mtp-vh: 1svh; }
+  }
+
+  /* ==========================================================================
+     2. THEMES - one block per season. Edit colours here.
+     ========================================================================== */
+
+  /* ---- SPRING · fresh green, blossom pink ---- */
+  #mtp-root[data-theme="spring"] {
+    --mtp-a1: #3fa46b;
+    --mtp-a2: #f06fae;
+    --mtp-fx: #f06fae;
+    --mtp-cta2: #b8237f;
+    --mtp-ink: #1d2a23;
+    --mtp-ink2: #5d6b63;
+    --mtp-page: linear-gradient(155deg, #fbfefb 0%, #eff9f2 45%, #fdf3f8 100%);
+    --mtp-glow1: rgba(63, 164, 107, 0.30);
+    --mtp-glow2: rgba(240, 111, 174, 0.26);
+    --mtp-line: rgba(63, 164, 107, 0.22);
+    --mtp-shadow: rgba(31, 82, 55, 0.16);
+    --mtp-scrim: linear-gradient(200deg, rgba(63, 164, 107, 0.22) 0%, rgba(255, 255, 255, 0) 42%, rgba(240, 111, 174, 0.24) 100%);
+  }
+
+  /* ---- SUMMER · warm amber, turquoise ---- */
+  #mtp-root[data-theme="summer"] {
+    --mtp-a1: #ef8018;
+    --mtp-a2: #17b0c4;
+    --mtp-fx: #ef8018;
+    --mtp-cta2: #f2851f;
+    --mtp-ink: #2b2118;
+    --mtp-ink2: #6d6155;
+    --mtp-page: linear-gradient(155deg, #fffdf7 0%, #fff2e2 45%, #ecfafc 100%);
+    --mtp-glow1: rgba(239, 128, 24, 0.28);
+    --mtp-glow2: rgba(23, 176, 196, 0.24);
+    --mtp-line: rgba(239, 128, 24, 0.24);
+    --mtp-shadow: rgba(120, 62, 12, 0.16);
+    --mtp-scrim: linear-gradient(200deg, rgba(239, 128, 24, 0.20) 0%, rgba(255, 255, 255, 0) 45%, rgba(23, 176, 196, 0.24) 100%);
+  }
+
+  /* ---- AUTUMN · rust, gold ---- */
+  #mtp-root[data-theme="autumn"] {
+    --mtp-a1: #c2622a;
+    --mtp-a2: #b4902f;
+    --mtp-fx: #c2622a;
+    --mtp-cta2: #c2622a;
+    --mtp-ink: #2a1f18;
+    --mtp-ink2: #6f6156;
+    --mtp-page: linear-gradient(155deg, #fffaf4 0%, #faecdc 45%, #fdf3ec 100%);
+    --mtp-glow1: rgba(194, 98, 42, 0.28);
+    --mtp-glow2: rgba(180, 144, 47, 0.24);
+    --mtp-line: rgba(194, 98, 42, 0.24);
+    --mtp-shadow: rgba(97, 48, 20, 0.16);
+    --mtp-scrim: linear-gradient(200deg, rgba(194, 98, 42, 0.24) 0%, rgba(255, 255, 255, 0) 45%, rgba(180, 144, 47, 0.24) 100%);
+  }
+
+  /* ---- WINTER · ice blue, silver ---- */
+  #mtp-root[data-theme="winter"] {
+    --mtp-a1: #2f7ba6;
+    --mtp-a2: #8aa7c2;
+    --mtp-fx: #7ba3c4;
+    --mtp-cta2: #3f5fa8;
+    --mtp-ink: #1c242c;
+    --mtp-ink2: #5d6a76;
+    --mtp-page: linear-gradient(155deg, #fbfdff 0%, #ecf3fa 45%, #faf7fb 100%);
+    --mtp-glow1: rgba(47, 123, 166, 0.26);
+    --mtp-glow2: rgba(138, 167, 194, 0.28);
+    --mtp-line: rgba(47, 123, 166, 0.22);
+    --mtp-shadow: rgba(22, 52, 76, 0.16);
+    --mtp-scrim: linear-gradient(200deg, rgba(47, 123, 166, 0.22) 0%, rgba(255, 255, 255, 0) 45%, rgba(138, 167, 194, 0.26) 100%);
+  }
+
+  /* ---- WINTER · festive flavour, applied automatically in December ---- */
+  #mtp-root[data-theme="festive"] {
+    --mtp-a1: #b41e32;
+    --mtp-a2: #1e7b3e;
+    --mtp-fx: #b41e32;
+    --mtp-cta2: #b41e32;
+    --mtp-ink: #22201f;
+    --mtp-ink2: #675f5d;
+    --mtp-page: linear-gradient(155deg, #fffbfb 0%, #f6eeef 45%, #f0f6f1 100%);
+    --mtp-glow1: rgba(180, 30, 50, 0.24);
+    --mtp-glow2: rgba(30, 123, 62, 0.22);
+    --mtp-line: rgba(180, 30, 50, 0.20);
+    --mtp-shadow: rgba(74, 26, 32, 0.16);
+    --mtp-scrim: linear-gradient(200deg, rgba(180, 30, 50, 0.22) 0%, rgba(255, 255, 255, 0) 45%, rgba(30, 123, 62, 0.22) 100%);
+  }
+
+  /* ==========================================================================
+     3. RESET
+     The popup is injected into an unknown page, so every inherited style is
+     neutralised inside #mtp-root. Component rules below all carry the
+     #mtp-root prefix so they out-specify this reset.
+     Note: transform / animation / transition are deliberately NOT reset -
+     an !important reset would outrank the keyframe animations.
+     ========================================================================== */
+
+  #mtp-root,
+  #mtp-root *,
+  #mtp-root *::before,
+  #mtp-root *::after {
+    box-sizing: border-box !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    outline: 0 !important;
+    background: transparent none !important;
+    box-shadow: none !important;
+    color: inherit !important;
+    font: inherit !important;
+    font-family: var(--mtp-font) !important;
+    line-height: 1.5 !important;
+    letter-spacing: normal !important;
+    text-transform: none !important;
+    text-decoration: none !important;
+    text-align: left !important;
+    text-shadow: none !important;
+    list-style: none !important;
+    float: none !important;
+    clear: none !important;
+    vertical-align: baseline !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    max-width: none !important;
+    max-height: none !important;
+    overflow-wrap: break-word !important;
+    -webkit-appearance: none !important;
+    appearance: none !important;
+  }
+
+  /* ==========================================================================
+     4. SHELL - fullscreen, never scrollable
+     ========================================================================== */
+
+  #mtp-root {
     position: fixed !important;
     top: 0 !important;
     left: 0 !important;
-    width: 100vw !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100% !important;
     height: 100vh !important;
-    background: linear-gradient(135deg, rgba(30, 40, 60, 0.45) 0%, rgba(60, 30, 50, 0.4) 50%, rgba(20, 40, 50, 0.45) 100%) !important;
-    backdrop-filter: blur(12px) saturate(180%) !important;
-    -webkit-backdrop-filter: blur(12px) saturate(180%) !important;
-    z-index: 999999 !important;
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
+    height: 100dvh !important;
+    z-index: 2147483000 !important;
+    overflow: hidden !important;
+    overscroll-behavior: none !important;
+    touch-action: none !important;
+    background: var(--mtp-page) !important;
+    color: var(--mtp-ink) !important;
+    font-family: var(--mtp-font) !important;
+    font-size: var(--mtp-fs-body) !important;
     opacity: 0;
     visibility: hidden;
-    font-family: 'Source Sans Pro', -apple-system, BlinkMacSystemFont, sans-serif !important;
-    box-sizing: border-box !important;
-    margin: 0 !important;
-    padding: 20px !important;
-    overflow: hidden !important;
+    pointer-events: none;
+    transition: opacity 0.45s ease, visibility 0.45s ease !important;
+    -webkit-font-smoothing: antialiased !important;
+    -moz-osx-font-smoothing: grayscale !important;
+    -webkit-tap-highlight-color: transparent !important;
+    contain: strict !important;
   }
-  
-  #mtp-overlay.mtp-active {
+
+  #mtp-root.mtp-open {
     opacity: 1;
     visibility: visible;
-    animation: mtpFadeIn 0.4s ease-out;
-  }
-  
-  /* Christmas Snowflakes */
-  #mtp-snow {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 10000000;
-    overflow: hidden;
-    display: none;
-  }
-  
-  #mtp-snow.active {
-    display: block;
-  }
-  
-  #mtp-snow .flake {
-    position: absolute;
-    top: -30px;
-    color: #fff;
-    opacity: 0.8;
-    animation: snowfall linear forwards;
-  }
-  
-  @keyframes snowfall {
-    0% { 
-      transform: translateY(0) rotate(0deg); 
-      opacity: 0.9;
-    }
-    100% { 
-      transform: translateY(100vh) rotate(360deg); 
-      opacity: 0;
-    }
-  }
-  
-  #mtp-overlay *,
-  #mtp-overlay *::before,
-  #mtp-overlay *::after {
-    box-sizing: border-box !important;
+    pointer-events: auto;
   }
 
-  #mtp-container {
-    position: relative !important;
-    max-width: 1100px !important;
-    width: 95% !important;
-    max-height: 92vh !important;
-    overflow: hidden !important;
-    border-radius: 36px !important;
-    background: linear-gradient(145deg, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0.65) 50%, rgba(255, 255, 255, 0.75) 100%) !important;
-    backdrop-filter: blur(30px) saturate(200%) !important;
-    -webkit-backdrop-filter: blur(30px) saturate(200%) !important;
-    box-shadow: 
-      0 30px 80px rgba(0, 0, 0, 0.2),
-      0 15px 35px rgba(226, 1, 123, 0.1),
-      inset 0 0 0 1.5px rgba(255, 255, 255, 0.6),
-      inset 0 2px 0 rgba(255, 255, 255, 0.9),
-      inset 0 -2px 20px rgba(0, 0, 0, 0.02) !important;
-    opacity: 0;
-    transform: translateY(30px) scale(0.98);
-  }
-  
-  #mtp-overlay.mtp-active #mtp-container {
-    animation: mtpSlideIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.1s forwards;
-  }
-
-  #mtp-content {
-    position: relative !important;
-    display: flex !important;
-    flex-direction: row !important;
-    overflow: hidden !important;
-    border-radius: 36px !important;
-    min-height: 0 !important;
-  }
-  
-  /* Language Toggle */
-  .mtp-lang-toggle {
-    position: absolute !important;
-    top: 22px !important;
-    right: 72px !important;
-    display: flex !important;
-    gap: 6px !important;
-    background: rgba(255, 255, 255, 0.7) !important;
-    backdrop-filter: blur(15px) saturate(180%) !important;
-    -webkit-backdrop-filter: blur(15px) saturate(180%) !important;
-    padding: 6px !important;
-    border-radius: 20px !important;
-    z-index: 15 !important;
-    box-shadow:
-      0 4px 15px rgba(0, 0, 0, 0.08),
-      inset 0 0 0 1px rgba(255, 255, 255, 0.5),
-      inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
-  }
-
-  .mtp-lang-btn {
-    padding: 7px 10px !important;
-    border: none !important;
-    border-radius: 14px !important;
-    font-size: 12px !important;
-    font-weight: 600 !important;
-    cursor: pointer !important;
-    transition: all 0.25s ease !important;
-    background: transparent !important;
-    color: #666 !important;
-    font-family: 'Source Sans Pro', sans-serif !important;
-    line-height: 1 !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    width: 40px !important;
-    height: 28px !important;
-  }
-
-  .mtp-lang-btn img {
-    width: 24px !important;
-    height: 16px !important;
-    object-fit: cover !important;
-    border-radius: 2px !important;
-  }
-
-  .mtp-lang-btn.active {
-    background: linear-gradient(135deg, #b41e32 0%, #1e7b3e 100%) !important;
-    color: #fff !important;
-    box-shadow: 0 2px 8px rgba(180, 30, 50, 0.3) !important;
-  }
-
-  .mtp-lang-btn:hover:not(.active) {
-    background: rgba(226, 1, 123, 0.1) !important;
-    color: #e2017b !important;
-  }
-  
-  /* Left Side - Image with liquid glass layers */
-  .mtp-image-side {
-    flex: 0 0 48% !important;
-    position: relative !important;
-    background: linear-gradient(165deg, rgba(253, 248, 252, 0.95) 0%, rgba(250, 245, 250, 0.85) 30%, rgba(248, 242, 248, 0.9) 70%, rgba(253, 250, 252, 0.95) 100%) !important;
-    backdrop-filter: blur(15px) !important;
-    -webkit-backdrop-filter: blur(15px) !important;
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    justify-content: center !important;
-    padding: 50px 40px !important;
-    overflow: hidden !important;
-  }
-  
-  /* Liquid glass shine overlay */
-  .mtp-image-side::before {
+  /* Ambient light - two soft seasonal glows behind everything */
+  #mtp-root::before {
     content: '' !important;
     position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    bottom: 0 !important;
-    background: 
-      linear-gradient(180deg, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0) 25%),
-      linear-gradient(0deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 20%),
-      radial-gradient(ellipse at 30% 20%, rgba(255,255,255,0.4) 0%, transparent 50%),
-      radial-gradient(ellipse at 70% 80%, rgba(226, 1, 123, 0.03) 0%, transparent 50%) !important;
-    pointer-events: none !important;
-    z-index: 1 !important;
-  }
-  
-  .mtp-image-side::after {
-    content: '❄' !important;
-    position: absolute !important;
-    top: 20px !important;
-    right: 20px !important;
-    font-size: 24px !important;
-    opacity: 0.3 !important;
-    color: #b41e32 !important;
-  }
-  
-  /* Background Game Board - Below slider only */
-  .mtp-bg-game1 {
-    position: absolute !important;
-    bottom: 15px !important;
-    left: 50% !important;
-    transform: translateX(-50%) !important;
-    width: 55% !important;
-    height: auto !important;
-    object-fit: contain !important;
-    opacity: 0.12 !important;
+    inset: 0 !important;
+    background:
+      radial-gradient(60% 55% at 12% 8%,  var(--mtp-glow1) 0%, transparent 65%),
+      radial-gradient(65% 60% at 92% 96%, var(--mtp-glow2) 0%, transparent 68%) !important;
     pointer-events: none !important;
     z-index: 0 !important;
   }
-  
-  /* Image Slider Container */
-  .mtp-slider-container {
+
+  /* ---- Stage: the responsive two-part layout ---- */
+  #mtp-root .mtp-stage {
     position: relative !important;
+    z-index: 1 !important;
+    display: grid !important;
     width: 100% !important;
-    max-width: 420px !important;
+    height: 100% !important;
+    overflow: hidden !important;
+    /* Portrait / small screens: content takes the height it needs, the
+       photo absorbs whatever is left over - so there is never a gap and
+       never an overflow, on any screen height. */
+    grid-template-columns: minmax(0, 1fr) !important;
+    grid-template-rows: minmax(0, 1fr) minmax(0, auto) !important;
+  }
+
+  /* ==========================================================================
+     5. VISUAL SIDE (photo slider)
+     ========================================================================== */
+
+  #mtp-root .mtp-visual {
+    position: relative !important;
+    z-index: 1 !important;
+    overflow: hidden !important;
+    background: linear-gradient(160deg, var(--mtp-glow1), var(--mtp-glow2)) !important;
+  }
+
+  #mtp-root .mtp-slide {
+    position: absolute !important;
+    inset: 0 !important;
+    opacity: 0;
+    transition: opacity 0.9s ease !important;
+  }
+
+  #mtp-root .mtp-slide.is-active { opacity: 1; }
+
+  #mtp-root .mtp-slide img {
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    object-position: center 42% !important;
+  }
+
+  /* Seasonal colour wash + legibility gradient for the dots */
+  #mtp-root .mtp-visual-scrim {
+    position: absolute !important;
+    inset: 0 !important;
+    background:
+      linear-gradient(0deg, rgba(0, 0, 0, 0.28) 0%, rgba(0, 0, 0, 0) 34%),
+      var(--mtp-scrim) !important;
+    pointer-events: none !important;
+    z-index: 2 !important;
+  }
+
+  /* Soft feather where the photo meets the content panel */
+  #mtp-root .mtp-visual::after {
+    content: '' !important;
+    position: absolute !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: -1px !important;
+    height: 22% !important;
+    background: linear-gradient(0deg, var(--mtp-page) 0%, transparent 100%) !important;
+    opacity: 0.9 !important;
+    pointer-events: none !important;
     z-index: 3 !important;
   }
-  
-  .mtp-slider {
-    position: relative !important;
-    width: 100% !important;
-    aspect-ratio: 1 / 1 !important;
-    border-radius: 28px !important;
-    overflow: hidden !important;
-    box-shadow: 
-      0 35px 70px rgba(0, 0, 0, 0.25),
-      0 15px 35px rgba(226, 1, 123, 0.15),
-      inset 0 0 0 1.5px rgba(255, 255, 255, 0.3),
-      inset 0 2px 0 rgba(255, 255, 255, 0.4) !important;
-  }
-  
-  /* Slider glass overlay */
-  .mtp-slider::before {
-    content: '' !important;
+
+  /* ---- Season badge ---- */
+  #mtp-root .mtp-badge {
     position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    height: 40% !important;
-    background: linear-gradient(180deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 100%) !important;
-    pointer-events: none !important;
-    z-index: 5 !important;
-    border-radius: 28px 28px 0 0 !important;
-  }
-  
-  .mtp-slide {
-    position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
-    width: 100% !important;
-    height: 100% !important;
-    opacity: 0;
-    transition: opacity 0.5s ease-in-out;
-  }
-  
-  .mtp-slide.active { opacity: 1; }
-  
-  .mtp-slide img {
-    width: 100% !important;
-    height: 100% !important;
-    object-fit: cover !important;
-    border-radius: 28px !important;
-  }
-  
-  /* Slider Dots - Inside image at bottom with liquid glass */
-  .mtp-slider-dots {
-    position: absolute !important;
-    bottom: 16px !important;
-    left: 50% !important;
-    transform: translateX(-50%) !important;
-    display: flex !important;
-    justify-content: center !important;
-    gap: 8px !important;
-    padding: 10px 18px !important;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0.2) 100%) !important;
-    backdrop-filter: blur(25px) saturate(200%) !important;
-    -webkit-backdrop-filter: blur(25px) saturate(200%) !important;
-    border-radius: 30px !important;
-    z-index: 10 !important;
-    box-shadow: 
-      0 10px 40px rgba(0, 0, 0, 0.2),
-      inset 0 0 0 1px rgba(255, 255, 255, 0.5),
-      inset 0 2px 0 rgba(255, 255, 255, 0.6),
-      inset 0 -1px 0 rgba(0, 0, 0, 0.05) !important;
-  }
-  
-  .mtp-dot {
-    width: 32px !important;
-    height: 6px !important;
-    border-radius: 3px !important;
-    background: rgba(255, 255, 255, 0.5) !important;
-    cursor: pointer !important;
-    transition: all 0.3s ease !important;
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.5), 0 1px 2px rgba(0,0,0,0.1) !important;
-  }
-  
-  .mtp-dot.active { 
-    background: linear-gradient(135deg, #e2017b 0%, #c4156d 100%) !important; 
-    transform: scale(1.15) !important; 
-    box-shadow: 0 4px 15px rgba(226, 1, 123, 0.5), inset 0 1px 0 rgba(255,255,255,0.3) !important;
-  }
-  
-  .mtp-dot.completed { 
-    background: linear-gradient(135deg, #e2017b 0%, #c4156d 100%) !important;
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.2) !important;
-  }
-  
-  .mtp-dot:hover { 
-    background: rgba(226, 1, 123, 0.6) !important; 
-    transform: scale(1.2) !important; 
-  }
-  .mtp-dot.active:hover,
-  .mtp-dot.completed:hover {
-    background: linear-gradient(135deg, #e2017b 0%, #c4156d 100%) !important;
-  }
-  
-  /* Badge */
-  .mtp-badge {
-    position: absolute !important;
-    top: 30px !important;
-    left: 30px !important;
-    background: linear-gradient(135deg, rgba(180, 30, 50, 0.9) 0%, rgba(30, 123, 62, 0.9) 100%) !important;
-    backdrop-filter: blur(10px) !important;
-    -webkit-backdrop-filter: blur(10px) !important;
-    color: #fff !important;
-    font-size: 12px !important;
-    font-weight: 700 !important;
-    padding: 10px 18px !important;
-    border-radius: 25px !important;
-    text-transform: uppercase !important;
-    letter-spacing: 1.5px !important;
-    box-shadow: 
-      0 8px 25px rgba(180, 30, 50, 0.35),
-      inset 0 1px 0 rgba(255, 255, 255, 0.3),
-      inset 0 -1px 0 rgba(0, 0, 0, 0.1) !important;
-    z-index: 5 !important;
-    display: none !important;
-  }
-  
-  .mtp-badge.active-lang { display: block !important; }
-  .mtp-badge::before { content: '🎄 ' !important; }
-  
-  /* Right Side - Content with Liquid Glass Effect */
-  .mtp-text-side {
-    flex: 1 !important;
-    padding: 70px 55px 50px !important;
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: center !important;
-    position: relative !important;
-    overflow: hidden !important;
-    background: linear-gradient(155deg, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0.35) 50%, rgba(255,255,255,0.5) 100%) !important;
-  }
-  
-  /* Liquid glass shimmer */
-  .mtp-text-side::before {
-    content: '' !important;
-    position: absolute !important;
-    top: 0 !important;
-    right: 0 !important;
-    width: 100% !important;
-    height: 100% !important;
-    background-image: url('https://montresor.at/media/posts/9/responsive/lass-dein-herz-sprechen-spielfeld-xxxl.png') !important;
-    background-size: 120% !important;
-    background-position: center right !important;
-    background-repeat: no-repeat !important;
-    opacity: 0.06 !important;
-    pointer-events: none !important;
-    z-index: 0 !important;
-  }
-  
-  /* Top shine */
-  .mtp-text-side::after {
-    content: '' !important;
-    position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    height: 50% !important;
-    background: linear-gradient(180deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 100%) !important;
-    pointer-events: none !important;
-    z-index: 0 !important;
-  }
-  
-  /* Glass effect text container - liquid glass */
-  .mtp-glass-container {
-    background: linear-gradient(155deg, rgba(255, 255, 255, 0.92) 0%, rgba(255, 255, 255, 0.7) 30%, rgba(255, 255, 255, 0.65) 70%, rgba(255, 255, 255, 0.85) 100%) !important;
-    backdrop-filter: blur(30px) saturate(200%) !important;
-    -webkit-backdrop-filter: blur(30px) saturate(200%) !important;
-    border-radius: 28px !important;
-    padding: 35px !important;
-    position: relative !important;
-    z-index: 2 !important;
-    overflow: hidden !important;
-    box-shadow: 
-      0 25px 60px rgba(0, 0, 0, 0.12),
-      0 12px 30px rgba(226, 1, 123, 0.06),
-      inset 0 0 0 1.5px rgba(255, 255, 255, 0.8),
-      inset 0 2px 0 rgba(255, 255, 255, 1),
-      inset 0 -2px 15px rgba(0, 0, 0, 0.02),
-      inset 0 20px 40px rgba(255, 255, 255, 0.3) !important;
-  }
-  
-  /* Liquid glass shine effect - top */
-  .mtp-glass-container::before {
-    content: '' !important;
-    position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    height: 55% !important;
-    background: linear-gradient(180deg, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0.2) 40%, rgba(255,255,255,0) 100%) !important;
-    border-radius: 28px 28px 100px 100px !important;
-    pointer-events: none !important;
-    z-index: 0 !important;
-  }
-  
-  /* Bottom reflection */
-  .mtp-glass-container::after {
-    content: '' !important;
-    position: absolute !important;
-    bottom: 0 !important;
-    left: 8% !important;
-    right: 8% !important;
-    height: 25% !important;
-    background: linear-gradient(0deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 100%) !important;
-    border-radius: 0 0 28px 28px !important;
-    pointer-events: none !important;
-    z-index: 0 !important;
-  }
-  
-  /* Close Button - matching language toggle container exactly */
-  #mtp-close {
-    position: absolute !important;
-    top: 22px !important;
-    right: 22px !important;
-    width: 40px !important;
-    height: 40px !important;
-    padding: 0 !important;
-    background: rgba(255, 255, 255, 0.7) !important;
-    backdrop-filter: blur(15px) saturate(180%) !important;
-    -webkit-backdrop-filter: blur(15px) saturate(180%) !important;
-    border: none !important;
-    border-radius: 20px !important;
-    color: #666 !important;
-    font-size: 18px !important;
-    font-weight: 400 !important;
-    cursor: pointer !important;
-    display: flex !important;
-    justify-content: center !important;
+    top: calc(var(--mtp-pad) + env(safe-area-inset-top, 0px)) !important;
+    left: calc(var(--mtp-pad) + env(safe-area-inset-left, 0px)) !important;
+    z-index: 4 !important;
+    display: inline-flex !important;
     align-items: center !important;
-    transition: all 0.25s ease !important;
-    z-index: 15 !important;
-    font-family: 'Source Sans Pro', sans-serif !important;
+    gap: 0.5em !important;
+    padding: 0.6em 1.05em !important;
+    border-radius: 999px !important;
+    background: rgba(255, 255, 255, 0.82) !important;
+    backdrop-filter: blur(14px) saturate(160%) !important;
+    -webkit-backdrop-filter: blur(14px) saturate(160%) !important;
+    color: var(--mtp-a1) !important;
+    font-size: var(--mtp-fs-xs) !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.14em !important;
+    text-transform: uppercase !important;
     line-height: 1 !important;
-    box-shadow:
-      0 4px 15px rgba(0, 0, 0, 0.08),
-      inset 0 0 0 1px rgba(255, 255, 255, 0.5),
-      inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
+    box-shadow: 0 6px 22px var(--mtp-shadow) !important;
   }
 
-  #mtp-close:hover {
-    background: rgba(226, 1, 123, 0.1) !important;
-    color: #e2017b !important;
-  }
-  
-  /* Text Styles */
-  .mtp-eyebrow {
-    font-size: 13px !important;
-    font-weight: 600 !important;
-    color: #b41e32 !important;
-    text-transform: uppercase !important;
-    letter-spacing: 2.5px !important;
-    margin: 0 0 14px 0 !important;
-    display: none !important;
+  #mtp-root .mtp-badge-icon {
+    font-size: 1.25em !important;
+    line-height: 1 !important;
+    letter-spacing: normal !important;
   }
 
-  .mtp-title {
-    font-size: 34px !important;
-    font-weight: 700 !important;
-    margin: 0 0 22px 0 !important;
-    padding: 0 !important;
-    color: #333 !important;
-    line-height: 1.25 !important;
-    font-family: 'Source Sans Pro', sans-serif !important;
-    display: none !important;
-  }
-  
-  .mtp-title span {
-    background: linear-gradient(135deg, #e2017b 0%, #b41e32 100%) !important;
-    -webkit-background-clip: text !important;
-    -webkit-text-fill-color: transparent !important;
-    background-clip: text !important;
-  }
-  
-  .mtp-subtitle {
-    font-size: 17px !important;
-    line-height: 1.75 !important;
-    margin: 0 0 28px 0 !important;
-    padding: 0 !important;
-    color: #666 !important;
-    font-weight: 400 !important;
-    font-family: 'Source Sans Pro', sans-serif !important;
-    display: none !important;
-  }
-
-  .mtp-features {
-    margin: 0 0 28px 0 !important;
-    padding: 0 !important;
-    list-style: none !important;
-  }
-  
-  .mtp-feature {
-    font-size: 15px !important;
-    margin: 0 0 14px 0 !important;
-    padding: 0 0 0 32px !important;
-    color: #555 !important;
-    font-weight: 500 !important;
-    font-family: 'Source Sans Pro', sans-serif !important;
-    line-height: 1.5 !important;
-    display: none !important;
-    position: relative !important;
-  }
-  
-  .mtp-feature::before {
-    content: '♥' !important;
+  /* ---- Slider dots ---- */
+  #mtp-root .mtp-dots {
     position: absolute !important;
-    left: 0 !important;
-    top: 0 !important;
-    font-size: 16px !important;
-    color: #b41e32 !important;
-  }
-
-  .mtp-quote {
-    font-size: 16px !important;
-    font-style: italic !important;
-    color: #888 !important;
-    padding: 18px 0 18px 0 !important;
-    margin: 0 0 30px 0 !important;
-    font-family: 'Source Sans Pro', sans-serif !important;
-    line-height: 1.65 !important;
-    display: none !important;
-  }
-
-  /* Buttons */
-  .mtp-buttons {
+    left: 50% !important;
+    bottom: calc(var(--mtp-pad) * 0.75) !important;
+    transform: translateX(-50%);
+    z-index: 5 !important;
     display: flex !important;
-    flex-direction: row !important;
-    flex-wrap: wrap !important;
-    gap: 12px !important;
-    margin: 0 !important;
-    padding: 0 !important;
-  }
-  
-  .mtp-btn {
-    padding: 14px 20px !important;
-    border: none !important;
-    border-radius: 14px !important;
-    font-size: 14px !important;
-    font-weight: 600 !important;
-    cursor: pointer !important;
-    transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1) !important;
-    text-decoration: none !important;
-    display: none !important;
-    text-align: center !important;
-    font-family: 'Source Sans Pro', sans-serif !important;
-    line-height: 1.2 !important;
-    white-space: nowrap !important;
-    flex: 1 1 auto !important;
-    min-width: 0 !important;
-    position: relative !important;
-    overflow: hidden !important;
-  }
-  
-  .mtp-btn.active-lang { display: inline-block !important; }
-  
-  .mtp-btn-primary {
-    background: linear-gradient(135deg, #e2017b 0%, #c4156d 50%, #d01070 100%) !important;
-    color: #fff !important;
-    box-shadow: 
-      0 10px 30px rgba(226, 1, 123, 0.35),
-      0 5px 15px rgba(0, 0, 0, 0.1),
-      inset 0 2px 0 rgba(255, 255, 255, 0.25),
-      inset 0 -2px 0 rgba(0, 0, 0, 0.15) !important;
-    flex: 1 1 100% !important;
-  }
-  
-  .mtp-btn-primary:hover {
-    filter: brightness(1.08) !important;
-    box-shadow: 
-      0 12px 35px rgba(226, 1, 123, 0.45),
-      0 6px 20px rgba(0, 0, 0, 0.12),
-      inset 0 2px 0 rgba(255, 255, 255, 0.3),
-      inset 0 -2px 0 rgba(0, 0, 0, 0.1) !important;
-    color: #fff !important;
-    text-decoration: none !important;
-  }
-  
-  .mtp-btn-secondary {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.75) 0%, rgba(255, 255, 255, 0.5) 100%) !important;
-    backdrop-filter: blur(15px) saturate(180%) !important;
-    -webkit-backdrop-filter: blur(15px) saturate(180%) !important;
-    color: #b41e32 !important;
-    box-shadow: 
-      0 6px 20px rgba(0, 0, 0, 0.08),
-      inset 0 0 0 1.5px rgba(180, 30, 50, 0.15),
-      inset 0 2px 0 rgba(255, 255, 255, 0.9),
-      inset 0 -1px 0 rgba(0, 0, 0, 0.03) !important;
-    flex: 1 1 calc(50% - 6px) !important;
-  }
-  
-  .mtp-btn-secondary:hover {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.7) 100%) !important;
-    box-shadow: 
-      0 8px 25px rgba(0, 0, 0, 0.1),
-      inset 0 0 0 1.5px rgba(180, 30, 50, 0.25),
-      inset 0 2px 0 rgba(255, 255, 255, 1),
-      inset 0 -1px 0 rgba(0, 0, 0, 0.02) !important;
-    color: #b41e32 !important;
-    text-decoration: none !important;
-  }
-  
-  /* Trust Bar */
-  .mtp-trust {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: flex-start !important;
-    gap: 10px !important;
-    margin-top: 30px !important;
-    padding-top: 0 !important;
-  }
-  
-  .mtp-trust-item {
-    display: none !important;
     align-items: center !important;
-    gap: 8px !important;
-    font-size: 13px !important;
-    color: #777 !important;
-    font-weight: 500 !important;
-  }
-  
-  .mtp-trust-item.active-lang { display: flex !important; }
-  
-  .mtp-trust-icon {
-    font-size: 14px !important;
-    color: #e2017b !important;
-    font-weight: 700 !important;
+    gap: 6px !important;
+    padding: 7px 11px !important;
+    border-radius: 999px !important;
+    background: rgba(255, 255, 255, 0.26) !important;
+    backdrop-filter: blur(16px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.4) !important;
   }
 
-  /* Active language display */
-  .mtp-eyebrow.active-lang,
-  .mtp-title.active-lang,
-  .mtp-subtitle.active-lang,
-  .mtp-feature.active-lang,
-  .mtp-quote.active-lang {
+  #mtp-root .mtp-dot {
+    width: clamp(16px, calc(var(--mtp-vw) * 1.6), 30px) !important;
+    height: 4px !important;
+    border-radius: 999px !important;
+    background: rgba(255, 255, 255, 0.55) !important;
+    cursor: pointer !important;
+    transition: background 0.3s ease, width 0.3s ease !important;
     display: block !important;
   }
 
-  /* ========================================
-     RESPONSIVE - LARGE SCREENS
-     ======================================== */
-  @media screen and (min-width: 1400px) {
-    #mtp-container { max-width: 1200px !important; }
-    #mtp-content { min-height: 0 !important; }
-    .mtp-slider-container { max-width: 460px !important; }
-    .mtp-title { font-size: 38px !important; }
-    .mtp-subtitle { font-size: 18px !important; }
-    .mtp-text-side { padding: 75px 60px 55px !important; }
+  #mtp-root .mtp-dot.is-active {
+    background: #fff !important;
+    width: clamp(26px, calc(var(--mtp-vw) * 2.6), 46px) !important;
   }
 
-  /* ========================================
-     RESPONSIVE - SMALLER LAPTOPS (height-based)
-     ======================================== */
-  @media screen and (max-height: 800px) {
-    #mtp-container { max-height: 88vh !important; }
-    #mtp-content { min-height: 0 !important; }
-    .mtp-image-side { padding: 40px 35px !important; }
-    .mtp-slider-container { max-width: 340px !important; }
-    .mtp-text-side { padding: 50px 40px 40px !important; }
-    .mtp-glass-container { padding: 28px !important; }
-    .mtp-title { font-size: 28px !important; }
-    .mtp-subtitle { font-size: 15px !important; margin-bottom: 20px !important; }
-    .mtp-feature { font-size: 14px !important; margin-bottom: 10px !important; }
-    .mtp-buttons { gap: 10px !important; }
-    .mtp-btn { padding: 12px 18px !important; font-size: 13px !important; }
-    /* Hide quote and trust on small desktop heights */
-    .mtp-quote.active-lang { display: none !important; }
-    .mtp-trust { display: none !important; }
+  #mtp-root .mtp-dot:hover { background: rgba(255, 255, 255, 0.85) !important; }
+
+  /* ==========================================================================
+     6. CONTENT PANEL
+     ========================================================================== */
+
+  #mtp-root .mtp-panel {
+    position: relative !important;
+    z-index: 3 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-end !important;
+    overflow: hidden !important;
+    padding: var(--mtp-pad) !important;
+    padding-top: calc(var(--mtp-pad) * 0.75) !important;
+    padding-bottom: calc(var(--mtp-pad) + env(safe-area-inset-bottom, 0px)) !important;
   }
 
-  @media screen and (max-height: 700px) {
-    #mtp-container { max-height: 85vh !important; }
-    #mtp-content { min-height: 0 !important; }
-    .mtp-image-side { padding: 35px 30px !important; }
-    .mtp-slider-container { max-width: 280px !important; }
-    .mtp-text-side { padding: 45px 35px 35px !important; }
-    .mtp-glass-container { padding: 24px !important; }
-    .mtp-title { font-size: 26px !important; margin-bottom: 16px !important; }
-    .mtp-subtitle { font-size: 14px !important; margin-bottom: 18px !important; }
-    .mtp-features { margin-bottom: 18px !important; }
-    .mtp-feature { font-size: 13px !important; margin-bottom: 8px !important; }
-    .mtp-btn { padding: 11px 16px !important; font-size: 12px !important; }
-    .mtp-quote.active-lang { display: none !important; }
-    .mtp-trust { display: none !important; }
+  /* Faint game-board watermark */
+  #mtp-root .mtp-panel-mark {
+    position: absolute !important;
+    right: -8% !important;
+    bottom: -12% !important;
+    width: min(70%, 620px) !important;
+    aspect-ratio: 1 / 1 !important;
+    background: url('https://montresor.at/media/posts/9/responsive/lass-dein-herz-sprechen-spielfeld-xxxl.png') center / contain no-repeat !important;
+    opacity: 0.055 !important;
+    pointer-events: none !important;
+    z-index: 0 !important;
   }
 
-  /* ========================================
-     RESPONSIVE - TABLET (601px - 900px)
-     ======================================== */
-  @media screen and (max-width: 900px) {
-    #mtp-overlay {
-      padding: 15px !important;
-      overflow: hidden !important;
-    }
-
-    #mtp-container {
-      max-height: 92vh !important;
-      border-radius: 28px !important;
-      overflow: hidden !important;
-    }
-
-    #mtp-content {
-      flex-direction: row !important;
-      min-height: auto !important;
-      border-radius: 28px !important;
-      overflow: hidden !important;
-      height: 100% !important;
-    }
-
-    .mtp-image-side {
-      flex: 0 0 42% !important;
-      padding: 40px 30px !important;
-      border-radius: 28px 0 0 28px !important;
-      overflow: hidden !important;
-    }
-
-    .mtp-slider-container { max-width: 260px !important; }
-    .mtp-slider { border-radius: 20px !important; }
-    .mtp-slide img { border-radius: 20px !important; }
-    .mtp-bg-game1 { width: 50% !important; bottom: 10px !important; opacity: 0.10 !important; }
-    .mtp-badge { top: 20px !important; left: 20px !important; font-size: 10px !important; padding: 8px 14px !important; }
-    .mtp-text-side {
-      flex: 1 !important;
-      padding: 40px 30px 30px !important;
-      overflow: hidden !important;
-      display: flex !important;
-      flex-direction: column !important;
-    }
-    .mtp-glass-container {
-      padding: 24px !important;
-      overflow: hidden !important;
-      flex: 1 !important;
-      display: flex !important;
-      flex-direction: column !important;
-    }
-    .mtp-title { font-size: 26px !important; margin-bottom: 12px !important; }
-    .mtp-subtitle { font-size: 14px !important; margin-bottom: 14px !important; }
-    .mtp-feature { font-size: 13px !important; margin-bottom: 8px !important; }
-    .mtp-features { margin-bottom: 14px !important; }
-    /* Hide quote and trust on tablet */
-    .mtp-quote.active-lang { display: none !important; }
-    .mtp-trust { display: none !important; }
-    .mtp-buttons {
-      margin-top: auto !important;
-      flex-wrap: nowrap !important;
-      gap: 10px !important;
-    }
-    .mtp-btn { flex: 1 !important; padding: 12px 14px !important; font-size: 13px !important; }
-    .mtp-lang-toggle { right: 68px !important; top: 18px !important; }
-    #mtp-close { width: 36px !important; height: 36px !important; font-size: 16px !important; }
+  #mtp-root .mtp-panel-inner {
+    position: relative !important;
+    z-index: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: var(--mtp-gap) !important;
+    width: 100% !important;
+    max-width: 34em !important;
+    margin: 0 auto !important;
   }
-  
-  /* ========================================
-     RESPONSIVE - MOBILE (max 600px)
-     ======================================== */
-  @media screen and (max-width: 600px) {
-    #mtp-overlay {
-      padding: 12px !important;
-      height: 100vh !important;
-      height: 100dvh !important;
-      overflow: hidden !important;
+
+  /* ---- Eyebrow (seasonal hook line) ---- */
+  #mtp-root .mtp-eyebrow {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.6em !important;
+    color: var(--mtp-a1) !important;
+    font-size: var(--mtp-fs-xs) !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.16em !important;
+    text-transform: uppercase !important;
+    line-height: 1.3 !important;
+  }
+
+  #mtp-root .mtp-eyebrow-dot {
+    flex: 0 0 auto !important;
+    width: 0.5em !important;
+    height: 0.5em !important;
+    border-radius: 50% !important;
+    background: currentColor !important;
+    display: block !important;
+  }
+
+  /* ---- Title ---- */
+  #mtp-root .mtp-title {
+    font-size: var(--mtp-fs-title) !important;
+    font-weight: 700 !important;
+    line-height: 1.14 !important;
+    letter-spacing: -0.015em !important;
+    color: var(--mtp-ink) !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 3 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+  }
+
+  #mtp-root .mtp-title-brand {
+    background: linear-gradient(120deg, var(--mtp-brand) 0%, var(--mtp-cta2) 100%) !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    color: var(--mtp-brand) !important;
+  }
+
+  /* ---- Subtitle ---- */
+  #mtp-root .mtp-sub {
+    font-size: var(--mtp-fs-body) !important;
+    line-height: 1.6 !important;
+    color: var(--mtp-ink2) !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 3 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+  }
+
+  /* ---- Info chips - the details live behind these ---- */
+  #mtp-root .mtp-chips {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: calc(var(--mtp-gap) * 0.5) !important;
+  }
+
+  #mtp-root .mtp-chip {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 0.5em !important;
+    padding: 0.62em 0.95em !important;
+    border-radius: 999px !important;
+    background: var(--mtp-card) !important;
+    box-shadow: inset 0 0 0 1px var(--mtp-line), 0 2px 10px var(--mtp-shadow) !important;
+    color: var(--mtp-ink) !important;
+    font-size: var(--mtp-fs-sm) !important;
+    font-weight: 600 !important;
+    line-height: 1.15 !important;
+    white-space: nowrap !important;
+    cursor: pointer !important;
+    text-align: left !important;
+    transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.22s ease, background 0.22s ease !important;
+  }
+
+  #mtp-root .mtp-chip:hover,
+  #mtp-root .mtp-chip:focus-visible {
+    background: rgba(255, 255, 255, 0.92) !important;
+    transform: translateY(-2px);
+    box-shadow: inset 0 0 0 1px var(--mtp-a1), 0 8px 20px var(--mtp-shadow) !important;
+  }
+
+  #mtp-root .mtp-chip-i {
+    flex: 0 0 auto !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 1.45em !important;
+    height: 1.45em !important;
+    border-radius: 50% !important;
+    background: var(--mtp-a1) !important;
+    color: #fff !important;
+    font-size: 0.82em !important;
+    font-weight: 700 !important;
+    font-style: italic !important;
+    line-height: 1 !important;
+  }
+
+  /* ---- Buttons ---- */
+  #mtp-root .mtp-actions {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: calc(var(--mtp-gap) * 0.55) !important;
+  }
+
+  #mtp-root .mtp-actions-row {
+    display: flex !important;
+    gap: calc(var(--mtp-gap) * 0.55) !important;
+  }
+
+  #mtp-root .mtp-btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0.5em !important;
+    padding: 0.92em 1.3em !important;
+    border-radius: var(--mtp-r-sm) !important;
+    font-size: var(--mtp-fs-btn) !important;
+    font-weight: 700 !important;
+    line-height: 1.15 !important;
+    text-align: center !important;
+    text-decoration: none !important;
+    cursor: pointer !important;
+    white-space: nowrap !important;
+    transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.22s ease, filter 0.22s ease !important;
+  }
+
+  #mtp-root .mtp-btn-primary {
+    background: linear-gradient(120deg, var(--mtp-brand) 0%, var(--mtp-cta2) 100%) !important;
+    color: #fff !important;
+    box-shadow: 0 10px 26px var(--mtp-shadow), inset 0 1px 0 rgba(255, 255, 255, 0.28) !important;
+  }
+
+  #mtp-root .mtp-btn-primary::after {
+    content: '\2192' !important;
+    font-weight: 400 !important;
+    transition: transform 0.25s ease !important;
+    display: inline-block !important;
+  }
+
+  #mtp-root .mtp-btn-primary:hover,
+  #mtp-root .mtp-btn-primary:focus-visible {
+    filter: brightness(1.07);
+    transform: translateY(-2px);
+    box-shadow: 0 14px 32px var(--mtp-shadow), inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+    color: #fff !important;
+  }
+
+  #mtp-root .mtp-btn-primary:hover::after { transform: translateX(3px); }
+
+  #mtp-root .mtp-btn-ghost {
+    flex: 1 1 0 !important;
+    background: var(--mtp-card2) !important;
+    color: var(--mtp-ink) !important;
+    font-weight: 600 !important;
+    box-shadow: inset 0 0 0 1px var(--mtp-line) !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  #mtp-root .mtp-btn-ghost:hover,
+  #mtp-root .mtp-btn-ghost:focus-visible {
+    background: rgba(255, 255, 255, 0.85) !important;
+    color: var(--mtp-a1) !important;
+    transform: translateY(-2px);
+    box-shadow: inset 0 0 0 1px var(--mtp-a1) !important;
+  }
+
+  #mtp-root .mtp-btn:active { transform: translateY(0) scale(0.985); }
+
+  /* ---- Footnote ---- */
+  #mtp-root .mtp-note {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.5em !important;
+    color: var(--mtp-ink2) !important;
+    font-size: var(--mtp-fs-xs) !important;
+    line-height: 1.4 !important;
+    opacity: 0.9 !important;
+  }
+
+  #mtp-root .mtp-note-mark {
+    flex: 0 0 auto !important;
+    color: var(--mtp-a1) !important;
+    font-size: 1.15em !important;
+    line-height: 1 !important;
+  }
+
+  /* ==========================================================================
+     7. INFO SHEET - detail text lives here, revealed by the chips
+     It covers exactly the content panel, so it can never be taller than the
+     space that already fits.
+     ========================================================================== */
+
+  #mtp-root .mtp-sheet {
+    position: absolute !important;
+    inset: 0 !important;
+    z-index: 6 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    padding: var(--mtp-pad) !important;
+    background: var(--mtp-page) !important;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.28s ease, visibility 0.28s ease !important;
+    overflow: hidden !important;
+  }
+
+  #mtp-root .mtp-sheet.is-open {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+
+  #mtp-root .mtp-sheet-inner {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: var(--mtp-gap) !important;
+    width: 100% !important;
+    max-width: 34em !important;
+    margin: 0 auto !important;
+    transform: translateY(10px);
+    transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1) !important;
+  }
+
+  #mtp-root .mtp-sheet.is-open .mtp-sheet-inner { transform: translateY(0); }
+
+  #mtp-root .mtp-sheet-kicker {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 0.45em 0.85em !important;
+    border-radius: 999px !important;
+    background: var(--mtp-card) !important;
+    box-shadow: inset 0 0 0 1px var(--mtp-line) !important;
+    color: var(--mtp-a1) !important;
+    font-size: var(--mtp-fs-xs) !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.14em !important;
+    text-transform: uppercase !important;
+    line-height: 1 !important;
+  }
+
+  #mtp-root .mtp-sheet-title {
+    font-size: calc(var(--mtp-fs-title) * 0.66) !important;
+    font-weight: 700 !important;
+    line-height: 1.2 !important;
+    color: var(--mtp-ink) !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+  }
+
+  #mtp-root .mtp-sheet-body {
+    font-size: var(--mtp-fs-body) !important;
+    line-height: 1.65 !important;
+    color: var(--mtp-ink2) !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 7 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+  }
+
+  #mtp-root .mtp-sheet-back {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 0.5em !important;
+    padding: 0.8em 1.2em !important;
+    border-radius: var(--mtp-r-sm) !important;
+    background: var(--mtp-card) !important;
+    box-shadow: inset 0 0 0 1px var(--mtp-line) !important;
+    color: var(--mtp-ink) !important;
+    font-size: var(--mtp-fs-btn) !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    transition: transform 0.22s ease, box-shadow 0.22s ease !important;
+  }
+
+  #mtp-root .mtp-sheet-back:hover,
+  #mtp-root .mtp-sheet-back:focus-visible {
+    transform: translateX(-3px);
+    box-shadow: inset 0 0 0 1px var(--mtp-a1) !important;
+    color: var(--mtp-a1) !important;
+  }
+
+  /* ==========================================================================
+     8. CONTROLS - language switch and close
+     ========================================================================== */
+
+  #mtp-root .mtp-controls {
+    position: absolute !important;
+    top: calc(var(--mtp-pad) * 0.7 + env(safe-area-inset-top, 0px)) !important;
+    right: calc(var(--mtp-pad) * 0.7 + env(safe-area-inset-right, 0px)) !important;
+    z-index: 30 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+  }
+
+  #mtp-root .mtp-lang {
+    display: flex !important;
+    align-items: center !important;
+    gap: 2px !important;
+    padding: 3px !important;
+    border-radius: 999px !important;
+    background: rgba(255, 255, 255, 0.72) !important;
+    backdrop-filter: blur(14px) saturate(160%) !important;
+    -webkit-backdrop-filter: blur(14px) saturate(160%) !important;
+    box-shadow: 0 4px 16px var(--mtp-shadow), inset 0 0 0 1px rgba(255, 255, 255, 0.5) !important;
+  }
+
+  #mtp-root .mtp-lang-btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    height: calc(var(--mtp-ctl) - 12px) !important;
+    padding: 0 0.85em !important;
+    border-radius: 999px !important;
+    color: var(--mtp-ink2) !important;
+    font-size: var(--mtp-fs-xs) !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.08em !important;
+    line-height: 1 !important;
+    cursor: pointer !important;
+    transition: background 0.22s ease, color 0.22s ease !important;
+  }
+
+  #mtp-root .mtp-lang-btn.is-active {
+    background: var(--mtp-brand) !important;
+    color: #fff !important;
+  }
+
+  #mtp-root .mtp-lang-btn:not(.is-active):hover { color: var(--mtp-a1) !important; }
+
+  #mtp-root .mtp-close {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: var(--mtp-ctl) !important;
+    height: var(--mtp-ctl) !important;
+    border-radius: 50% !important;
+    background: rgba(255, 255, 255, 0.72) !important;
+    backdrop-filter: blur(14px) saturate(160%) !important;
+    -webkit-backdrop-filter: blur(14px) saturate(160%) !important;
+    color: var(--mtp-ink) !important;
+    cursor: pointer !important;
+    box-shadow: 0 4px 16px var(--mtp-shadow), inset 0 0 0 1px rgba(255, 255, 255, 0.5) !important;
+    transition: background 0.22s ease, color 0.22s ease, transform 0.22s ease !important;
+  }
+
+  #mtp-root .mtp-close svg {
+    display: block !important;
+    width: 42% !important;
+    height: 42% !important;
+  }
+
+  #mtp-root .mtp-close:hover,
+  #mtp-root .mtp-close:focus-visible {
+    background: #fff !important;
+    color: var(--mtp-a1) !important;
+    transform: rotate(90deg);
+  }
+
+  #mtp-root :focus-visible {
+    outline: 2px solid var(--mtp-a1) !important;
+    outline-offset: 3px !important;
+  }
+
+  /* ==========================================================================
+     9. SEASONAL PARTICLES
+     ========================================================================== */
+
+  #mtp-root .mtp-fx {
+    color: var(--mtp-fx) !important;
+    position: absolute !important;
+    inset: 0 !important;
+    z-index: 2 !important;
+    overflow: hidden !important;
+    pointer-events: none !important;
+    contain: strict !important;
+  }
+
+  #mtp-root .mtp-particle {
+    position: absolute !important;
+    top: 0 !important;
+    line-height: 1 !important;
+    will-change: transform, opacity !important;
+    animation-timing-function: linear !important;
+    animation-iteration-count: infinite !important;
+  }
+
+  @keyframes mtpDrift {
+    0%   { transform: translate3d(0, -14vh, 0) rotate(0deg); opacity: 0; }
+    12%  { opacity: var(--mtp-o, 0.75); }
+    88%  { opacity: var(--mtp-o, 0.75); }
+    100% { transform: translate3d(var(--mtp-dx, 40px), 114vh, 0) rotate(var(--mtp-rot, 360deg)); opacity: 0; }
+  }
+
+  @keyframes mtpRise {
+    0%   { transform: translate3d(0, 112vh, 0) scale(0.55); opacity: 0; }
+    18%  { opacity: var(--mtp-o, 0.6); }
+    82%  { opacity: var(--mtp-o, 0.6); }
+    100% { transform: translate3d(var(--mtp-dx, 30px), -12vh, 0) scale(1.1); opacity: 0; }
+  }
+
+  /* ==========================================================================
+     10. RESPONSIVE
+     One breakpoint switches between the stacked layout (portrait) and the
+     side-by-side layout (landscape / desktop). Everything else is fluid.
+     ========================================================================== */
+
+  /* ---- Side by side: wide screens and any landscape screen ---- */
+  @media (min-width: 880px), (orientation: landscape) and (min-width: 620px) and (min-height: 330px) {
+    #mtp-root .mtp-stage {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.06fr) !important;
+      grid-template-rows: minmax(0, 1fr) !important;
     }
 
-    /* Disable snow on mobile */
-    #mtp-snow { display: none !important; }
-
-    /* Close button ALWAYS visible on mobile (no delay) */
-    #mtp-close.mtp-close-hidden {
-      opacity: 1 !important;
-      pointer-events: auto !important;
-      transform: none !important;
-    }
-
-    #mtp-close {
-      position: absolute !important;
-      top: 12px !important;
-      right: 12px !important;
-      width: 36px !important;
-      height: 36px !important;
-      padding: 0 !important;
-      font-size: 16px !important;
-      z-index: 9999 !important;
-      border-radius: 18px !important;
-    }
-
-    #mtp-close:active { background: rgba(226, 1, 123, 0.1) !important; color: #e2017b !important; }
-
-    #mtp-container {
-      width: 100% !important;
-      max-width: 100% !important;
+    #mtp-root .mtp-visual::after {
+      left: auto !important;
+      top: 0 !important;
+      bottom: 0 !important;
+      right: -1px !important;
+      width: 18% !important;
       height: auto !important;
-      max-height: calc(100dvh - 24px) !important;
-      min-height: 0 !important;
-      border-radius: 24px !important;
-      overflow: hidden !important;
+      background: linear-gradient(270deg, var(--mtp-page) 0%, transparent 100%) !important;
     }
 
-    #mtp-content {
-      flex-direction: column !important;
-      height: auto !important;
-      min-height: 0 !important;
-      border-radius: 24px !important;
-      overflow: hidden !important;
+    #mtp-root .mtp-panel {
+      justify-content: center !important;
+      padding: calc(var(--mtp-pad) * 1.15) calc(var(--mtp-pad) * 1.3) !important;
+      padding-top: calc(var(--mtp-pad) + var(--mtp-ctl)) !important;
+      padding-right: calc(var(--mtp-pad) * 1.3 + env(safe-area-inset-right, 0px)) !important;
     }
 
-    /* Hide image slider completely on mobile */
-    .mtp-image-side {
-      display: none !important;
-    }
-
-    .mtp-text-side {
-      flex: 0 1 auto !important;
-      display: flex !important;
-      flex-direction: column !important;
-      padding: 55px 20px 20px 20px !important;
-      overflow: hidden !important;
-    }
-
-    .mtp-text-side::before { opacity: 0.08 !important; background-size: 160% !important; }
-
-    .mtp-glass-container {
-      flex: 0 1 auto !important;
-      display: flex !important;
-      flex-direction: column !important;
-      padding: 24px 20px !important;
-      padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px)) !important;
-      border-radius: 20px !important;
-      overflow: hidden !important;
-      margin-bottom: 0 !important;
-    }
-
-    .mtp-eyebrow { font-size: 11px !important; letter-spacing: 2px !important; margin-bottom: 10px !important; }
-    .mtp-title { font-size: 24px !important; margin-bottom: 14px !important; line-height: 1.3 !important; }
-    .mtp-title span { display: block !important; }
-    .mtp-subtitle { font-size: 15px !important; margin-bottom: 18px !important; line-height: 1.6 !important; }
-
-    /* Hide features, quote, trust on mobile to save space */
-    .mtp-features { display: none !important; }
-    .mtp-quote.active-lang { display: none !important; }
-    .mtp-trust { display: none !important; }
-
-    /* Buttons in normal document flow, pushed to bottom via margin-top: auto */
-    .mtp-buttons {
-      position: static !important;
-      margin-top: auto !important;
-      flex-direction: row !important;
-      flex-wrap: wrap !important;
-      gap: 10px !important;
-      background: transparent !important;
-      box-shadow: none !important;
-      border-top: none !important;
-      backdrop-filter: none !important;
-      -webkit-backdrop-filter: none !important;
-      padding: 0 0 env(safe-area-inset-bottom, 0px) 0 !important;
-    }
-
-    .mtp-btn {
-      border-radius: 12px !important;
-      -webkit-tap-highlight-color: transparent !important;
-    }
-    .mtp-btn-primary {
-      flex: 1 1 100% !important;
-      order: -1 !important;
-      padding: 14px 20px !important;
-      font-size: 15px !important;
-      font-weight: 700 !important;
-      box-shadow: 0 4px 12px rgba(226, 1, 123, 0.25) !important;
-    }
-    .mtp-btn-primary:active { filter: brightness(0.92) !important; transform: scale(0.98) !important; }
-    .mtp-btn-secondary {
-      flex: 1 1 calc(50% - 5px) !important;
-      min-width: 0 !important;
-      padding: 12px 16px !important;
-      font-size: 13px !important;
-    }
-    .mtp-btn-secondary:active { background: rgba(180, 30, 50, 0.08) !important; transform: scale(0.98) !important; }
-
-    .mtp-lang-toggle { top: 12px !important; right: 55px !important; padding: 4px !important; gap: 4px !important; }
-    .mtp-lang-btn { width: 32px !important; height: 24px !important; padding: 4px 6px !important; }
-    .mtp-lang-btn img { width: 20px !important; height: 14px !important; }
+    #mtp-root .mtp-panel-inner,
+    #mtp-root .mtp-sheet-inner { max-width: 32em !important; margin: 0 auto !important; }
+    #mtp-root .mtp-sheet { padding: calc(var(--mtp-pad) * 1.15) calc(var(--mtp-pad) * 1.3) !important; }
+    #mtp-root .mtp-btn-primary { align-self: flex-start !important; padding-inline: 1.8em !important; }
+    #mtp-root .mtp-actions-row { max-width: 26em !important; }
   }
-  
-  /* ========================================
-     RESPONSIVE - SMALL MOBILE (max 380px)
-     ======================================== */
-  @media screen and (max-width: 380px) {
-    .mtp-text-side { padding: 50px 16px 16px 16px !important; }
-    .mtp-glass-container {
-      padding: 20px 16px !important;
-      padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px)) !important;
-      margin-bottom: 0 !important;
-    }
-    .mtp-title { font-size: 21px !important; }
-    .mtp-subtitle { font-size: 14px !important; }
-    #mtp-close { top: 10px !important; right: 10px !important; width: 32px !important; height: 32px !important; font-size: 15px !important; }
-    .mtp-lang-toggle { right: 48px !important; top: 10px !important; padding: 3px !important; gap: 3px !important; }
-    .mtp-lang-btn { width: 28px !important; height: 22px !important; padding: 3px 5px !important; }
-    .mtp-lang-btn img { width: 18px !important; height: 12px !important; }
-    .mtp-btn { font-size: 14px !important; padding: 12px 16px !important; }
-    .mtp-btn-primary { font-size: 15px !important; padding: 14px 16px !important; }
+
+  /* ---- Very wide screens: keep the reading column comfortable ---- */
+  @media (min-width: 1600px) {
+    #mtp-root .mtp-stage { grid-template-columns: minmax(0, 1fr) minmax(0, 0.95fr) !important; }
+    #mtp-root .mtp-panel-inner,
+    #mtp-root .mtp-sheet-inner { max-width: 30em !important; }
+    #mtp-root .mtp-panel-mark { width: min(58%, 520px) !important; }
   }
-  
-  /* ========================================
-     LANDSCAPE MOBILE
-     ======================================== */
-  @media screen and (max-width: 900px) and (max-height: 500px) and (orientation: landscape) {
-    #mtp-overlay { padding: 10px !important; align-items: center !important; overflow: hidden !important; }
-    #mtp-snow { display: none !important; }
-    #mtp-container { min-height: auto !important; max-height: 95vh !important; overflow: hidden !important; border-radius: 20px !important; }
-    #mtp-content { flex-direction: row !important; min-height: auto !important; height: 100% !important; border-radius: 20px !important; overflow: hidden !important; }
-    .mtp-image-side { flex: 0 0 40% !important; display: flex !important; padding: 25px 20px !important; border-radius: 20px 0 0 20px !important; min-height: auto !important; overflow: hidden !important; }
-    .mtp-slider-container { max-width: 180px !important; }
-    .mtp-slider-dots { bottom: 8px !important; padding: 6px 10px !important; gap: 4px !important; }
-    .mtp-dot { width: 20px !important; height: 4px !important; }
-    .mtp-badge { top: 12px !important; left: 12px !important; font-size: 8px !important; padding: 5px 10px !important; }
-    #mtp-close { position: absolute !important; top: 10px !important; right: 10px !important; width: 32px !important; height: 32px !important; font-size: 15px !important; }
-    .mtp-lang-toggle { right: 48px !important; top: 10px !important; padding: 3px !important; gap: 3px !important; }
-    .mtp-lang-btn { width: 28px !important; height: 22px !important; padding: 3px 5px !important; }
-    .mtp-lang-btn img { width: 18px !important; height: 12px !important; }
-    .mtp-text-side { padding: 25px 25px 25px 20px !important; overflow: hidden !important; }
-    .mtp-glass-container { padding: 18px !important; overflow: hidden !important; margin-bottom: 0 !important; }
-    .mtp-eyebrow { font-size: 9px !important; margin-bottom: 6px !important; }
-    .mtp-title { font-size: 20px !important; margin-bottom: 10px !important; }
-    .mtp-subtitle { font-size: 13px !important; margin-bottom: 12px !important; line-height: 1.5 !important; }
-    .mtp-features { display: none !important; }
-    .mtp-quote.active-lang { display: none !important; }
-    .mtp-trust { display: none !important; }
-    .mtp-buttons {
-      position: static !important;
-      margin-top: auto !important;
-      flex-direction: row !important;
-      gap: 8px !important;
-      background: transparent !important;
-      box-shadow: none !important;
-      border-top: none !important;
-      padding: 0 !important;
-      backdrop-filter: none !important;
-      -webkit-backdrop-filter: none !important;
+
+  /* ---- Short screens (landscape phones, small laptops): trim the extras ---- */
+  @media (max-height: 560px) {
+    #mtp-root .mtp-panel-mark { display: none !important; }
+    #mtp-root .mtp-note { display: none !important; }
+    #mtp-root .mtp-title { -webkit-line-clamp: 2 !important; }
+    #mtp-root .mtp-sub { -webkit-line-clamp: 2 !important; }
+    #mtp-root .mtp-sheet-body { -webkit-line-clamp: 5 !important; }
+  }
+
+  @media (max-height: 440px) {
+    #mtp-root .mtp-sub { display: none !important; }
+    #mtp-root .mtp-dots { display: none !important; }
+    #mtp-root .mtp-badge { display: none !important; }
+    #mtp-root .mtp-sheet-kicker { display: none !important; }
+  }
+
+  /* ---- Narrow phones: tighten the buttons so two still fit side by side ---- */
+  @media (max-width: 360px) {
+    #mtp-root .mtp-btn { padding-inline: 0.9em !important; }
+    #mtp-root .mtp-chip { padding-inline: 0.8em !important; }
+  }
+
+  /* ---- Motion / data preferences ---- */
+  @media (prefers-reduced-motion: reduce) {
+    #mtp-root,
+    #mtp-root * {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
     }
-    .mtp-btn { padding: 10px 14px !important; font-size: 12px !important; }
+    #mtp-root .mtp-fx { display: none !important; }
   }
 </style>
 
-<!-- Snow Container -->
-<div id="mtp-snow"></div>
+<!-- ==========================================================================
+     MARKUP
+     Copy lives in the CONTENT block of the script below, not here.
+     ========================================================================== -->
+<div id="mtp-root" data-theme="winter" data-lang="de" role="dialog" aria-modal="true" aria-labelledby="mtp-title" aria-hidden="true">
 
-<!-- Popup HTML -->
-<div id="mtp-overlay">
-  
-  <div id="mtp-container">
-    <div id="mtp-content">
-      
-      <!-- Language Toggle -->
-      <div class="mtp-lang-toggle">
-        <button class="mtp-lang-btn active" data-lang-btn="de"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Flag_of_Austria.svg/1280px-Flag_of_Austria.svg.png" alt="AT"></button>
-        <button class="mtp-lang-btn" data-lang-btn="en"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Flag_of_the_United_Kingdom_%283-5%29.svg/1280px-Flag_of_the_United_Kingdom_%283-5%29.svg.png" alt="EN"></button>
-      </div>
-      
-      <!-- Left: Image Side -->
-      <div class="mtp-image-side">
-        <img class="mtp-bg-game1" src="https://montresor.at/media/posts/9/responsive/lass-dein-herz-sprechen-spielfeld-xxxl.png" alt="">
-        
-        <div class="mtp-badge active-lang" data-lang="de">Geschenk-Idee</div>
-        <div class="mtp-badge" data-lang="en">Gift Idea</div>
-        
-        <div class="mtp-slider-container">
-          <div class="mtp-slider">
-            <div class="mtp-slide active"><img src="https://montresor.at/media/posts/4/gallery/P8020231.jpg" alt="Mon Tresor"></div>
-            <div class="mtp-slide"><img src="https://montresor.at/media/posts/2/responsive/P8020268-2-xl.jpg" alt="Mon Tresor"></div>
-            <div class="mtp-slide"><img src="https://montresor.at/media/posts/2/responsive/P8020219-xl.jpg" alt="Mon Tresor"></div>
-            <div class="mtp-slide"><img src="https://montresor.at/media/posts/2/responsive/P8020215-xl.jpg" alt="Mon Tresor"></div>
-            <div class="mtp-slide"><img src="https://montresor.at/media/posts/4/gallery/P8020207.jpg" alt="Mon Tresor"></div>
-            <div class="mtp-slider-dots">
-              <div class="mtp-dot active" data-slide="0"></div>
-              <div class="mtp-dot" data-slide="1"></div>
-              <div class="mtp-dot" data-slide="2"></div>
-              <div class="mtp-dot" data-slide="3"></div>
-              <div class="mtp-dot" data-slide="4"></div>
-            </div>
+  <div class="mtp-stage">
+
+    <!-- Left / top: photo slider -->
+    <div class="mtp-visual">
+      <div class="mtp-slide is-active"><img src="https://montresor.at/media/posts/4/gallery/P8020231.jpg" alt="Mon Tresor" loading="eager" decoding="async"></div>
+      <div class="mtp-slide"><img src="https://montresor.at/media/posts/2/responsive/P8020268-2-xl.jpg" alt="Mon Tresor" loading="lazy" decoding="async"></div>
+      <div class="mtp-slide"><img src="https://montresor.at/media/posts/2/responsive/P8020219-xl.jpg" alt="Mon Tresor" loading="lazy" decoding="async"></div>
+      <div class="mtp-slide"><img src="https://montresor.at/media/posts/2/responsive/P8020215-xl.jpg" alt="Mon Tresor" loading="lazy" decoding="async"></div>
+      <div class="mtp-slide"><img src="https://montresor.at/media/posts/4/gallery/P8020207.jpg" alt="Mon Tresor" loading="lazy" decoding="async"></div>
+
+      <div class="mtp-visual-scrim"></div>
+
+      <span class="mtp-badge">
+        <span class="mtp-badge-icon" data-mtp-el="badgeIcon"></span>
+        <span data-mtp-el="badge"></span>
+      </span>
+
+      <div class="mtp-dots" data-mtp-el="dots"></div>
+    </div>
+
+    <!-- Right / bottom: content -->
+    <div class="mtp-panel">
+      <div class="mtp-panel-mark"></div>
+
+      <div class="mtp-panel-inner">
+        <p class="mtp-eyebrow">
+          <span class="mtp-eyebrow-dot"></span>
+          <span data-mtp-el="eyebrow"></span>
+        </p>
+
+        <h2 class="mtp-title" id="mtp-title">
+          <span class="mtp-title-brand" data-mtp-el="brand"></span>
+          <span data-mtp-el="title"></span>
+        </h2>
+
+        <p class="mtp-sub" data-mtp-el="sub"></p>
+
+        <div class="mtp-chips" data-mtp-el="chips"></div>
+
+        <div class="mtp-actions">
+          <a class="mtp-btn mtp-btn-primary" data-mtp-link="order" href="#"><span data-mtp-el="cta"></span></a>
+          <div class="mtp-actions-row">
+            <a class="mtp-btn mtp-btn-ghost" data-mtp-link="reviews" href="#" data-mtp-el="reviews"></a>
+            <a class="mtp-btn mtp-btn-ghost" data-mtp-link="more" href="#" data-mtp-el="more"></a>
           </div>
         </div>
+
+        <p class="mtp-note">
+          <span class="mtp-note-mark">&#9829;</span>
+          <span data-mtp-el="note"></span>
+        </p>
       </div>
-      
-      <!-- Right: Text Side -->
-      <div class="mtp-text-side">
-        <button id="mtp-close" aria-label="Schließen">&times;</button>
-        
-        <div class="mtp-glass-container">
-          <!-- German Content -->
-          <p class="mtp-eyebrow active-lang" data-lang="de">Pädagogisches Spiel</p>
-          <h2 class="mtp-title active-lang" data-lang="de"><span>Mon Tresor®</span> – das Spiel, das Herzen öffnet</h2>
-          <p class="mtp-subtitle active-lang" data-lang="de">Echte Gespräche für Familien: Kinder sprechen mit Eltern, Enkel mit Großeltern – ehrlich, wertschätzend und auf Augenhöhe.</p>
-          
-          <!-- English Content -->
-          <p class="mtp-eyebrow" data-lang="en">Educational Game</p>
-          <h2 class="mtp-title" data-lang="en"><span>Mon Tresor®</span> – the game that opens hearts</h2>
-          <p class="mtp-subtitle" data-lang="en">Real conversations for families: Children talk with parents, grandchildren with grandparents – honestly, appreciatively, and on equal terms.</p>
-          
-          <div class="mtp-features">
-            <span class="mtp-feature active-lang" data-lang="de">Für alle Generationen geeignet</span>
-            <span class="mtp-feature active-lang" data-lang="de">Stärkt Familienbindung & Vertrauen</span>
-            <span class="mtp-feature active-lang" data-lang="de">Fördert Selbstwert & Kommunikation</span>
-            <span class="mtp-feature" data-lang="en">Suitable for all generations</span>
-            <span class="mtp-feature" data-lang="en">Strengthens family bonds & trust</span>
-            <span class="mtp-feature" data-lang="en">Promotes self-worth & communication</span>
-          </div>
-          
-          <p class="mtp-quote active-lang" data-lang="de">„Das perfekte Geschenk für alle, die mehr als nur etwas Materielles verschenken wollen."</p>
-          <p class="mtp-quote" data-lang="en">"The perfect gift for anyone who wants to give more than just something material."</p>
-          
-          <div class="mtp-buttons">
-            <a href="https://montresor.at/mon-tresor-bestellen/" class="mtp-btn mtp-btn-primary active-lang" data-lang="de">Jetzt bestellen</a>
-            <a href="https://montresor.at/tags/blog/" class="mtp-btn mtp-btn-secondary active-lang" data-lang="de">Bewertungen</a>
-            <a href="https://montresor.at/" class="mtp-btn mtp-btn-secondary active-lang" data-lang="de">Mehr erfahren</a>
-            <a href="https://montresor.at/english/how-to-order-mon-tresor.html" class="mtp-btn mtp-btn-primary" data-lang="en">Order Now</a>
-            <a href="https://montresor.at/english/tags/blog/" class="mtp-btn mtp-btn-secondary" data-lang="en">Reviews</a>
-            <a href="https://montresor.at/english/" class="mtp-btn mtp-btn-secondary" data-lang="en">Learn More</a>
-          </div>
-          
-          <div class="mtp-trust">
-            <span class="mtp-trust-item active-lang" data-lang="de"><span class="mtp-trust-icon">–</span> Von Dr. Soheyla Warnung, Individualpsychologin, entwickelt.</span>
-            <span class="mtp-trust-item active-lang" data-lang="de"><span class="mtp-trust-icon">–</span> Über 4000 Familien, Schulen und PädagogInnen haben dieses Spiel bereits begeistert erprobt.</span>
-            <span class="mtp-trust-item" data-lang="en"><span class="mtp-trust-icon">–</span> Developed by Dr. Soheyla Warnung, individual psychologist.</span>
-            <span class="mtp-trust-item" data-lang="en"><span class="mtp-trust-icon">–</span> Over 4,000 families, schools, and educators have already enthusiastically tried out this game.</span>
-          </div>
+
+      <!-- Detail layer, opened by the info chips -->
+      <div class="mtp-sheet" data-mtp-el="sheet" aria-hidden="true">
+        <div class="mtp-sheet-inner">
+          <span class="mtp-sheet-kicker" data-mtp-el="infoLabel"></span>
+          <h3 class="mtp-sheet-title" data-mtp-el="sheetTitle"></h3>
+          <p class="mtp-sheet-body" data-mtp-el="sheetBody"></p>
+          <button type="button" class="mtp-sheet-back" data-mtp-el="sheetBack">
+            <span aria-hidden="true">&#8592;</span><span data-mtp-el="back"></span>
+          </button>
         </div>
       </div>
     </div>
+
+    <!-- Seasonal particles: above the photo, behind the text -->
+    <div class="mtp-fx" data-mtp-el="fx" aria-hidden="true"></div>
+
+    <!-- Controls -->
+    <div class="mtp-controls">
+      <div class="mtp-lang" role="group" data-mtp-el="langGroup">
+        <button type="button" class="mtp-lang-btn is-active" data-mtp-lang="de">DE</button>
+        <button type="button" class="mtp-lang-btn" data-mtp-lang="en">EN</button>
+      </div>
+      <button type="button" class="mtp-close" data-mtp-el="close">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+
   </div>
+
 </div>
 
 <script>
-(function() {
-  var showDelay = 2000;
-  var oncePerSession = true;
-  var slideInterval = 5000;
-  
-  var overlay = document.getElementById('mtp-overlay');
-  var closeBtn = document.getElementById('mtp-close');
-  var slides = document.querySelectorAll('.mtp-slide');
-  var dots = document.querySelectorAll('.mtp-dot');
-  var langBtns = document.querySelectorAll('.mtp-lang-btn');
-  var currentSlide = 0;
+(function () {
+  'use strict';
+
+  /* ==========================================================================
+     CONFIG
+     ========================================================================== */
+  var CONFIG = {
+    showDelay: 1800,        // ms before the popup appears
+    oncePerSession: true,   // show only once per browser session
+    slideInterval: 5200,    // ms per photo
+    particles: true         // seasonal snow / petals / leaves / light
+  };
+
+  /* ==========================================================================
+     CONTENT - the only place you need to edit texts and links
+     ========================================================================== */
+  var CONTENT = {
+    de: {
+      brand: 'Mon Tresor®',
+      title: '– das Spiel, das Herzen öffnet',
+      sub: 'Echte Gespräche für Familien: Kinder mit Eltern, Enkel mit Großeltern – ehrlich, wertschätzend und auf Augenhöhe.',
+      cta: 'Jetzt bestellen',
+      reviews: 'Bewertungen',
+      more: 'Mehr erfahren',
+      note: 'Von Dr. Soheyla Warnung entwickelt · über 4.000 Familien und Schulen',
+      infoLabel: 'Gut zu wissen',
+      back: 'Zurück',
+      close: 'Schließen',
+      langLabel: 'Sprache wählen',
+      slideLabel: 'Bild',
+      infos: [
+        {
+          chip: 'Alle Generationen',
+          title: 'Ob 6 oder 86 Jahre',
+          body: 'Die Fragen sind so gestaltet, dass Kinder, Eltern und Großeltern gemeinsam ins Gespräch kommen – ohne Vorbereitung, ohne Gewinner und Verlierer. Jede Runde dauert so lange, wie ihr Lust habt.'
+        },
+        {
+          chip: 'Stärkt die Bindung',
+          title: 'Zuhören statt bewerten',
+          body: 'Mon Tresor schafft Momente, in denen Vertrauen, Selbstwert und echte Nähe wachsen. Familien berichten, dass sie Dinge erfahren, über die sonst nie gesprochen wurde – wertschätzend und auf Augenhöhe.'
+        },
+        {
+          chip: 'Von der Expertin',
+          title: 'Entwickelt mit Fachwissen',
+          body: 'Dr. Soheyla Warnung, Individualpsychologin, hat Mon Tresor aus ihrer Praxis heraus entwickelt. Über 4.000 Familien, Schulen und Pädagoginnen und Pädagogen haben das Spiel bereits erprobt.'
+        },
+        {
+          chip: 'Als Geschenk',
+          title: 'Mehr als etwas Materielles',
+          body: '„Das perfekte Geschenk für alle, die mehr als nur etwas Materielles verschenken wollen." Mon Tresor bleibt – als Spiel im Regal und als Erinnerung an gemeinsame Abende.'
+        }
+      ],
+      links: {
+        order: 'https://montresor.at/mon-tresor-bestellen/',
+        reviews: 'https://montresor.at/tags/blog/',
+        more: 'https://montresor.at/'
+      },
+      seasons: {
+        spring: { badge: 'Frühlings-Idee', line: 'Frisch aufblühen – Zeit für neue Gespräche' },
+        summer: { badge: 'Sommer-Idee',     line: 'Lange Abende, echte Gespräche' },
+        autumn: { badge: 'Herbst-Idee',     line: 'Gemütliche Abende zu zweit oder zu acht' },
+        winter: { badge: 'Winter-Idee',     line: 'Drinnen zusammenrücken und reden' },
+        festive:{ badge: 'Geschenk-Idee',   line: 'Das Geschenk, das bleibt' }
+      }
+    },
+    en: {
+      brand: 'Mon Tresor®',
+      title: '– the game that opens hearts',
+      sub: 'Real conversations for families: children with parents, grandchildren with grandparents – honest, appreciative and on equal terms.',
+      cta: 'Order now',
+      reviews: 'Reviews',
+      more: 'Learn more',
+      note: 'Created by Dr. Soheyla Warnung · over 4,000 families and schools',
+      infoLabel: 'Good to know',
+      back: 'Back',
+      close: 'Close',
+      langLabel: 'Choose language',
+      slideLabel: 'Photo',
+      infos: [
+        {
+          chip: 'Every generation',
+          title: 'Whether you are 6 or 86',
+          body: 'The questions are designed so that children, parents and grandparents all find their way into the conversation – no preparation, no winners or losers. A round lasts exactly as long as you want it to.'
+        },
+        {
+          chip: 'Builds closeness',
+          title: 'Listening instead of judging',
+          body: 'Mon Tresor creates moments where trust, self-worth and real closeness can grow. Families tell us they learn things that had never been spoken about before – appreciatively and on equal terms.'
+        },
+        {
+          chip: 'From the expert',
+          title: 'Built on real expertise',
+          body: 'Dr. Soheyla Warnung, an individual psychologist, developed Mon Tresor out of her own practice. Over 4,000 families, schools and educators have already tried the game.'
+        },
+        {
+          chip: 'As a gift',
+          title: 'More than something material',
+          body: '"The perfect gift for anyone who wants to give more than just something material." Mon Tresor stays – as a game on the shelf and as a memory of evenings spent together.'
+        }
+      ],
+      links: {
+        order: 'https://montresor.at/english/how-to-order-mon-tresor.html',
+        reviews: 'https://montresor.at/english/tags/blog/',
+        more: 'https://montresor.at/english/'
+      },
+      seasons: {
+        spring: { badge: 'Spring idea', line: 'Bloom again – time for new conversations' },
+        summer: { badge: 'Summer idea', line: 'Long evenings, real conversations' },
+        autumn: { badge: 'Autumn idea', line: 'Cosy evenings, just the two of you or all eight' },
+        winter: { badge: 'Winter idea', line: 'Pull up a chair and talk' },
+        festive:{ badge: 'Gift idea',   line: 'The gift that stays' }
+      }
+    }
+  };
+
+  /* ==========================================================================
+     THEMES - decorative behaviour. Colours live in the CSS THEMES block.
+     ========================================================================== */
+  var THEMES = {
+    spring:  { icon: '🌸', glyphs: ['❀', '✿', '❁', '✾'], motion: 'mtpDrift', size: [10, 22], dur: [9, 16],  rot: 320, opacity: 0.7 },
+    summer:  { icon: '☀️', glyphs: ['✦', '✧', '✶', '◦'], motion: 'mtpRise',  size: [8, 18],  dur: [10, 18], rot: 140, opacity: 0.55 },
+    autumn:  { icon: '🍂', glyphs: ['❦', '❧', '✿', '❀'], motion: 'mtpDrift', size: [12, 24], dur: [8, 15],  rot: 420, opacity: 0.7 },
+    winter:  { icon: '❄️', glyphs: ['❄︎', '❅', '❆', '✻'], motion: 'mtpDrift', size: [10, 20], dur: [9, 17], rot: 360, opacity: 0.75 },
+    festive: { icon: '🎄', glyphs: ['❄︎', '❅', '✻', '✦'], motion: 'mtpDrift', size: [10, 20], dur: [9, 17], rot: 360, opacity: 0.6 }
+  };
+
+  /* Meteorological seasons, northern hemisphere. December turns festive. */
+  function seasonFor(date) {
+    var m = date.getMonth();
+    if (m === 11) return 'festive';
+    if (m <= 1) return 'winter';
+    if (m <= 4) return 'spring';
+    if (m <= 7) return 'summer';
+    return 'autumn';
+  }
+
+  /* ==========================================================================
+     BOOT
+     ========================================================================== */
+  var root = document.getElementById('mtp-root');
+  if (!root) return;
+
+  function param(name) {
+    var m = new RegExp('[?&]' + name + '=([^&#]*)').exec(window.location.search);
+    return m ? decodeURIComponent(m[1]) : null;
+  }
+
+  function el(name) { return root.querySelector('[data-mtp-el="' + name + '"]'); }
+
+  var ui = {
+    badge: el('badge'), badgeIcon: el('badgeIcon'), eyebrow: el('eyebrow'),
+    brand: el('brand'), title: el('title'), sub: el('sub'), chips: el('chips'),
+    cta: el('cta'), reviews: el('reviews'), more: el('more'), note: el('note'),
+    dots: el('dots'), fx: el('fx'), close: el('close'), langGroup: el('langGroup'),
+    sheet: el('sheet'), sheetTitle: el('sheetTitle'), sheetBody: el('sheetBody'),
+    sheetBack: el('sheetBack'), infoLabel: el('infoLabel'), back: el('back')
+  };
+
+  var slides = root.querySelectorAll('.mtp-slide');
+  var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  var season = param('mtpTheme') || window.MTP_THEME || seasonFor(new Date());
+  if (!THEMES[season]) season = seasonFor(new Date());
+  var theme = THEMES[season];
+  root.setAttribute('data-theme', season);
+
+  /* ---- Language ---------------------------------------------------------- */
+  function detectLang() {
+    var forced = param('mtpLang');
+    if (CONTENT[forced]) return forced;
+    if (window.location.pathname.toLowerCase().indexOf('/english') !== -1) return 'en';
+    var htmlLang = (document.documentElement.getAttribute('lang') || '').toLowerCase();
+    if (htmlLang.indexOf('en') === 0) return 'en';
+    if (htmlLang.indexOf('de') === 0) return 'de';
+    var nav = (navigator.language || '').toLowerCase();
+    return nav.indexOf('de') === 0 ? 'de' : (nav ? 'en' : 'de');
+  }
+
+  var lang = detectLang();
+
+  function text(node, value) { if (node) node.textContent = value; }
+
+  function render() {
+    var c = CONTENT[lang];
+    var s = c.seasons[season] || c.seasons.winter;
+
+    root.setAttribute('data-lang', lang);
+    root.setAttribute('lang', lang);
+
+    text(ui.badge, s.badge);
+    text(ui.badgeIcon, theme.icon);
+    text(ui.eyebrow, s.line);
+    text(ui.brand, c.brand);
+    text(ui.title, c.title);
+    text(ui.sub, c.sub);
+    text(ui.cta, c.cta);
+    text(ui.reviews, c.reviews);
+    text(ui.more, c.more);
+    text(ui.note, c.note);
+    text(ui.infoLabel, c.infoLabel);
+    text(ui.back, c.back);
+
+    root.querySelectorAll('[data-mtp-link]').forEach(function (a) {
+      a.setAttribute('href', c.links[a.getAttribute('data-mtp-link')]);
+    });
+
+    if (ui.close) ui.close.setAttribute('aria-label', c.close);
+    if (ui.langGroup) ui.langGroup.setAttribute('aria-label', c.langLabel);
+
+    /* Info chips - the detail texts sit behind these */
+    if (ui.chips) {
+      ui.chips.innerHTML = '';
+      c.infos.forEach(function (info, i) {
+        var chip = document.createElement('button');
+        chip.type = 'button';
+        chip.className = 'mtp-chip';
+        chip.setAttribute('data-mtp-info', String(i));
+        var mark = document.createElement('span');
+        mark.className = 'mtp-chip-i';
+        mark.textContent = 'i';
+        mark.setAttribute('aria-hidden', 'true');
+        var label = document.createElement('span');
+        label.textContent = info.chip;
+        chip.appendChild(mark);
+        chip.appendChild(label);
+        ui.chips.appendChild(chip);
+      });
+    }
+
+    root.querySelectorAll('[data-mtp-lang]').forEach(function (b) {
+      var on = b.getAttribute('data-mtp-lang') === lang;
+      b.classList.toggle('is-active', on);
+      b.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+
+    /* Keep an open sheet in sync when the language changes */
+    if (ui.sheet && ui.sheet.classList.contains('is-open')) {
+      var idx = parseInt(ui.sheet.getAttribute('data-mtp-index') || '0', 10);
+      showSheet(idx);
+    }
+  }
+
+  /* ---- Info sheet -------------------------------------------------------- */
+  function showSheet(index) {
+    var info = CONTENT[lang].infos[index];
+    if (!info || !ui.sheet) return;
+    ui.sheet.setAttribute('data-mtp-index', String(index));
+    text(ui.sheetTitle, info.title);
+    text(ui.sheetBody, info.body);
+    ui.sheet.classList.add('is-open');
+    ui.sheet.setAttribute('aria-hidden', 'false');
+    if (ui.sheetBack) ui.sheetBack.focus();
+  }
+
+  function hideSheet() {
+    if (!ui.sheet) return;
+    ui.sheet.classList.remove('is-open');
+    ui.sheet.setAttribute('aria-hidden', 'true');
+  }
+
+  /* ---- Photo slider ------------------------------------------------------ */
+  var current = 0;
   var sliderTimer = null;
-  
-  if (!overlay || !closeBtn) return;
-  
-  function setLanguage(lang) {
-    langBtns.forEach(function(btn) {
-      btn.classList.toggle('active', btn.getAttribute('data-lang-btn') === lang);
-    });
-    document.querySelectorAll('[data-lang]').forEach(function(el) {
-      el.classList.toggle('active-lang', el.getAttribute('data-lang') === lang);
-    });
+  var dots = [];
+
+  function buildDots() {
+    if (!ui.dots) return;
+    ui.dots.innerHTML = '';
+    dots = [];
+    for (var i = 0; i < slides.length; i++) {
+      (function (index) {
+        var dot = document.createElement('button');
+        dot.type = 'button';
+        dot.className = 'mtp-dot' + (index === 0 ? ' is-active' : '');
+        dot.setAttribute('aria-label', CONTENT[lang].slideLabel + ' ' + (index + 1));
+        dot.addEventListener('click', function () { goTo(index); restartSlider(); });
+        ui.dots.appendChild(dot);
+        dots.push(dot);
+      })(i);
+    }
   }
-  
-  setLanguage('de');
-  
-  langBtns.forEach(function(btn) {
-    btn.addEventListener('click', function(e) {
-      e.preventDefault();
-      e.stopPropagation();
-      setLanguage(this.getAttribute('data-lang-btn'));
-    });
-  });
-  
-  function goToSlide(index) {
-    slides.forEach(function(slide) { slide.classList.remove('active'); });
-    dots.forEach(function(dot, i) {
-      dot.classList.remove('active', 'completed');
-      if (i < index) dot.classList.add('completed');
-    });
-    slides[index].classList.add('active');
-    dots[index].classList.add('active');
-    currentSlide = index;
+
+  function goTo(index) {
+    current = (index + slides.length) % slides.length;
+    for (var i = 0; i < slides.length; i++) {
+      slides[i].classList.toggle('is-active', i === current);
+      if (dots[i]) dots[i].classList.toggle('is-active', i === current);
+    }
   }
-  
-  function nextSlide() {
-    goToSlide((currentSlide + 1) % slides.length);
-  }
-  
-  function startSlider() {
+
+  function restartSlider() {
     if (sliderTimer) clearInterval(sliderTimer);
-    sliderTimer = setInterval(nextSlide, slideInterval);
+    if (slides.length < 2) return;
+    sliderTimer = setInterval(function () { goTo(current + 1); }, CONFIG.slideInterval);
   }
-  
+
   function stopSlider() {
     if (sliderTimer) { clearInterval(sliderTimer); sliderTimer = null; }
   }
-  
-  dots.forEach(function(dot, index) {
-    dot.addEventListener('click', function(e) {
+
+  /* ---- Seasonal particles ------------------------------------------------ */
+  function rand(min, max) { return Math.random() * (max - min) + min; }
+
+  function buildParticles() {
+    if (!ui.fx) return;
+    ui.fx.innerHTML = '';
+    if (!CONFIG.particles || reduceMotion) return;
+    if (navigator.connection && navigator.connection.saveData) return;
+
+    var area = window.innerWidth * window.innerHeight;
+    var count = Math.max(7, Math.min(24, Math.round(area / 46000)));
+
+    for (var i = 0; i < count; i++) {
+      var p = document.createElement('span');
+      p.className = 'mtp-particle';
+      p.textContent = theme.glyphs[i % theme.glyphs.length];
+      var dur = rand(theme.dur[0], theme.dur[1]);
+      p.style.left = rand(-2, 98) + '%';
+      p.style.fontSize = rand(theme.size[0], theme.size[1]).toFixed(1) + 'px';
+      p.style.animationName = theme.motion;
+      p.style.animationDuration = dur.toFixed(2) + 's';
+      p.style.animationDelay = (-rand(0, dur)).toFixed(2) + 's';
+      p.style.setProperty('--mtp-dx', rand(-70, 70).toFixed(0) + 'px');
+      p.style.setProperty('--mtp-rot', rand(-theme.rot, theme.rot).toFixed(0) + 'deg');
+      p.style.setProperty('--mtp-o', (theme.opacity * rand(0.6, 1)).toFixed(2));
+      ui.fx.appendChild(p);
+    }
+  }
+
+  /* ---- Open / close ------------------------------------------------------ */
+  var scrollLock = { html: '', body: '' };
+  var lastFocus = null;
+
+  function open() {
+    lastFocus = document.activeElement;
+    root.classList.add('mtp-open');
+    root.setAttribute('aria-hidden', 'false');
+
+    scrollLock.html = document.documentElement.style.overflow;
+    scrollLock.body = document.body.style.overflow;
+    document.documentElement.style.overflow = 'hidden';
+    document.body.style.overflow = 'hidden';
+
+    buildParticles();
+    restartSlider();
+    if (ui.close) ui.close.focus();
+  }
+
+  function close() {
+    root.classList.remove('mtp-open');
+    root.setAttribute('aria-hidden', 'true');
+    document.documentElement.style.overflow = scrollLock.html;
+    document.body.style.overflow = scrollLock.body;
+    stopSlider();
+    hideSheet();
+    if (ui.fx) ui.fx.innerHTML = '';
+    if (lastFocus && lastFocus.focus) { try { lastFocus.focus(); } catch (e) {} }
+  }
+
+  function isOpen() { return root.classList.contains('mtp-open'); }
+
+  /* ---- Events ------------------------------------------------------------ */
+  root.addEventListener('click', function (e) {
+    var chip = e.target.closest ? e.target.closest('[data-mtp-info]') : null;
+    if (chip) { e.preventDefault(); showSheet(parseInt(chip.getAttribute('data-mtp-info'), 10)); return; }
+
+    var langBtn = e.target.closest ? e.target.closest('[data-mtp-lang]') : null;
+    if (langBtn) {
       e.preventDefault();
-      e.stopPropagation();
-      goToSlide(index);
-      stopSlider();
-      startSlider();
-    });
-  });
-  
-  // Create random snowflakes
-  var snowContainer = document.getElementById('mtp-snow');
-  var snowflakes = ['❄', '❅', '❆', '✻'];
-  var snowInterval = null;
-  
-  function createSnowflake() {
-    if (!snowContainer) return;
-    var flake = document.createElement('div');
-    flake.className = 'flake';
-    flake.textContent = snowflakes[Math.floor(Math.random() * snowflakes.length)];
-    flake.style.left = (Math.random() * 100) + '%';
-    flake.style.fontSize = (Math.random() * 14 + 12) + 'px';
-    flake.style.animationDuration = (Math.random() * 4 + 6) + 's';
-    snowContainer.appendChild(flake);
-    
-    // Remove after animation
-    setTimeout(function() {
-      if (flake.parentNode) flake.remove();
-    }, 12000);
-  }
-  
-  function startSnow() {
-    if (!snowContainer) return;
-    snowContainer.classList.add('active');
-    if (snowInterval) return;
-    // Create initial batch spread out
-    for (var i = 0; i < 10; i++) {
-      setTimeout(createSnowflake, i * 300);
-    }
-    // Continue creating
-    snowInterval = setInterval(createSnowflake, 800);
-  }
-  
-  function stopSnow() {
-    if (snowInterval) {
-      clearInterval(snowInterval);
-      snowInterval = null;
-    }
-    if (snowContainer) {
-      snowContainer.classList.remove('active');
-      snowContainer.innerHTML = '';
-    }
-  }
-  
-  // Mobile close button visibility logic
-  var closeButtonRevealed = false;
-  var closeButtonTimer = null;
-
-  function isMobileView() {
-    return window.matchMedia('(max-width: 600px)').matches;
-  }
-
-  function revealCloseButton() {
-    if (closeButtonRevealed) return;
-    closeButtonRevealed = true;
-    closeBtn.classList.remove('mtp-close-hidden');
-  }
-
-  function checkScrolledToBottom() {
-    if (!isMobileView() || closeButtonRevealed) return;
-
-    var container = document.getElementById('mtp-container');
-    var scrollElement = container || overlay;
-
-    // Check if scrolled near bottom (within 100px)
-    var scrollTop = scrollElement.scrollTop;
-    var scrollHeight = scrollElement.scrollHeight;
-    var clientHeight = scrollElement.clientHeight;
-
-    if (scrollTop + clientHeight >= scrollHeight - 100) {
-      revealCloseButton();
-    }
-  }
-
-  function setupMobileCloseButton() {
-    if (!isMobileView()) {
-      // Not mobile - ensure close button is visible
-      closeBtn.classList.remove('mtp-close-hidden');
+      lang = langBtn.getAttribute('data-mtp-lang');
+      render();
+      buildDots();
+      goTo(current);
       return;
     }
 
-    // Hide close button initially on mobile
-    closeBtn.classList.add('mtp-close-hidden');
-    closeButtonRevealed = false;
+    if (e.target.closest && e.target.closest('[data-mtp-el="sheetBack"]')) { e.preventDefault(); hideSheet(); return; }
+    if (e.target.closest && e.target.closest('[data-mtp-el="close"]')) { e.preventDefault(); close(); }
+  });
 
-    // Reveal after 3 seconds
-    closeButtonTimer = setTimeout(revealCloseButton, 3000);
+  document.addEventListener('keydown', function (e) {
+    if (!isOpen()) return;
+    if (e.key === 'Escape' || e.key === 'Esc') {
+      if (ui.sheet && ui.sheet.classList.contains('is-open')) hideSheet();
+      else close();
+      return;
+    }
+    if (e.key !== 'Tab') return;
 
-    // Also reveal on scroll to bottom - listen to both possible scroll containers
-    var container = document.getElementById('mtp-container');
-    if (container) {
-      container.addEventListener('scroll', checkScrolledToBottom);
+    /* Keep keyboard focus inside the dialog - a hidden info sheet must not
+       catch the tab order */
+    var focusable = root.querySelectorAll('a[href], button:not([disabled])');
+    var visible = [];
+    for (var i = 0; i < focusable.length; i++) {
+      var node = focusable[i];
+      var shown = node.checkVisibility
+        ? node.checkVisibility({ visibilityProperty: true, opacityProperty: true })
+        : node.offsetParent !== null;
+      if (shown) visible.push(node);
     }
-    if (overlay) {
-      overlay.addEventListener('scroll', checkScrolledToBottom);
-    }
+    if (!visible.length) return;
+    var first = visible[0], last = visible[visible.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  });
+
+  /* Pause the slideshow while the visitor reads or the tab is hidden */
+  var visual = root.querySelector('.mtp-visual');
+  if (visual) {
+    visual.addEventListener('mouseenter', stopSlider);
+    visual.addEventListener('mouseleave', function () { if (isOpen()) restartSlider(); });
   }
 
-  function showPopup() {
-    if (oncePerSession && sessionStorage.getItem('mtpShown')) return;
-    overlay.classList.add('mtp-active');
-    document.body.style.overflow = 'hidden';
-    if (oncePerSession) sessionStorage.setItem('mtpShown', 'true');
-    startSlider();
-    startSnow();
-    setupMobileCloseButton();
+  document.addEventListener('visibilitychange', function () {
+    if (!isOpen()) return;
+    if (document.hidden) stopSlider(); else restartSlider();
+  });
+
+  /* Re-balance particle density after a resize or rotation */
+  var resizeTimer = null;
+  window.addEventListener('resize', function () {
+    if (!isOpen()) return;
+    if (resizeTimer) clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(buildParticles, 400);
+  });
+
+  /* Nothing inside the popup scrolls - block rubber-banding on iOS */
+  root.addEventListener('touchmove', function (e) { e.preventDefault(); }, { passive: false });
+
+  /* ---- Start ------------------------------------------------------------- */
+  function seen() {
+    try { return sessionStorage.getItem('mtpShown') === '1'; } catch (e) { return false; }
   }
-  
-  function closePopup() {
-    overlay.classList.remove('mtp-active');
-    document.body.style.overflow = '';
-    stopSlider();
-    stopSnow();
-    // Clean up mobile close button timer
-    if (closeButtonTimer) {
-      clearTimeout(closeButtonTimer);
-      closeButtonTimer = null;
-    }
+  function markSeen() {
+    try { sessionStorage.setItem('mtpShown', '1'); } catch (e) {}
   }
-  
-  setTimeout(showPopup, showDelay);
-  
-  closeBtn.addEventListener('click', function(e) {
-    e.preventDefault();
-    e.stopPropagation();
-    closePopup();
-  });
-  
-  overlay.addEventListener('click', function(e) {
-    if (e.target === overlay) closePopup();
-  });
-  
-  document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape' && overlay.classList.contains('mtp-active')) closePopup();
-  });
+
+  render();
+  buildDots();
+
+  if (CONFIG.oncePerSession && seen() && !param('mtpForce')) return;
+
+  setTimeout(function () {
+    if (CONFIG.oncePerSession) markSeen();
+    open();
+  }, CONFIG.showDelay);
 })();
 </script>
 <!-- Mon Tresor Popup - END -->
