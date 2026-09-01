@@ -476,8 +476,8 @@
 
   /* ---- Info chips - the details live behind these ---- */
   #mtp-root .mtp-chips {
-    display: flex !important;
-    flex-wrap: wrap !important;
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
     gap: calc(var(--mtp-gap) * 0.5) !important;
   }
 
@@ -496,7 +496,15 @@
     white-space: nowrap !important;
     cursor: pointer !important;
     text-align: left !important;
+    overflow: hidden !important;
     transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.22s ease, background 0.22s ease !important;
+  }
+
+  #mtp-root .mtp-chip-label {
+    min-width: 0 !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
   }
 
   #mtp-root .mtp-chip:hover,
@@ -865,8 +873,7 @@
     #mtp-root .mtp-panel-inner,
     #mtp-root .mtp-sheet-inner { max-width: 32em !important; margin: 0 auto !important; }
     #mtp-root .mtp-sheet { padding: calc(var(--mtp-pad) * 1.15) calc(var(--mtp-pad) * 1.3) !important; }
-    #mtp-root .mtp-btn-primary { align-self: flex-start !important; padding-inline: 1.8em !important; }
-    #mtp-root .mtp-actions-row { max-width: 26em !important; }
+    #mtp-root .mtp-actions { max-width: none !important; }
   }
 
   /* ---- Very wide screens: keep the reading column comfortable ---- */
@@ -1062,11 +1069,11 @@
         more: 'https://montresor.at/'
       },
       seasons: {
-        spring: { badge: 'Frühlings-Idee', line: 'Frisch aufblühen – Zeit für neue Gespräche' },
-        summer: { badge: 'Sommer-Idee',     line: 'Lange Abende, echte Gespräche' },
-        autumn: { badge: 'Herbst-Idee',     line: 'Gemütliche Abende zu zweit oder zu acht' },
-        winter: { badge: 'Winter-Idee',     line: 'Drinnen zusammenrücken und reden' },
-        festive:{ badge: 'Geschenk-Idee',   line: 'Das Geschenk, das bleibt' }
+        spring: { badge: 'Geschenk-Idee', line: 'Zeit für neue Gespräche' },
+        summer: { badge: 'Geschenk-Idee', line: 'Für lange Sommerabende' },
+        autumn: { badge: 'Geschenk-Idee', line: 'Für gemütliche Abende zu Hause' },
+        winter: { badge: 'Geschenk-Idee', line: 'Wenn alle zusammenrücken' },
+        festive:{ badge: 'Geschenk-Idee', line: 'Das Geschenk, das bleibt' }
       }
     },
     en: {
@@ -1110,11 +1117,11 @@
         more: 'https://montresor.at/english/'
       },
       seasons: {
-        spring: { badge: 'Spring idea', line: 'Bloom again – time for new conversations' },
-        summer: { badge: 'Summer idea', line: 'Long evenings, real conversations' },
-        autumn: { badge: 'Autumn idea', line: 'Cosy evenings, just the two of you or all eight' },
-        winter: { badge: 'Winter idea', line: 'Pull up a chair and talk' },
-        festive:{ badge: 'Gift idea',   line: 'The gift that stays' }
+        spring: { badge: 'Gift idea', line: 'Time for new conversations' },
+        summer: { badge: 'Gift idea', line: 'For long summer evenings' },
+        autumn: { badge: 'Gift idea', line: 'For cosy evenings at home' },
+        winter: { badge: 'Gift idea', line: 'When everyone gathers round' },
+        festive:{ badge: 'Gift idea', line: 'The gift that stays' }
       }
     }
   };
@@ -1226,6 +1233,7 @@
         mark.textContent = 'i';
         mark.setAttribute('aria-hidden', 'true');
         var label = document.createElement('span');
+        label.className = 'mtp-chip-label';
         label.textContent = info.chip;
         chip.appendChild(mark);
         chip.appendChild(label);
