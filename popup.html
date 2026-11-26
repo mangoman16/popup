@@ -5,17 +5,18 @@
   ==========================================================================
   QUICK REFERENCE
   ==========================================================================
-  Layout     Phone: bottom sheet (swipe down, tap outside or X to close).
+  Layout     Phone: bottom sheet (tap outside or X to close).
              Desktop: centred card. Nothing inside ever scrolls.
 
-  When       After 10 s, after 35 % scroll, or when the mouse leaves the
-             window (desktop) - whichever comes first. Never on the order
-             pages. After closing it stays away for 3 days, after a click
-             on "bestellen" for 30 days.
+  When       Right when the page opens. Never on the order pages. After
+             closing it stays away for 3 days, after a click on
+             "bestellen" for 30 days (?mtpForce=1 shows it anyway).
+
+  Photos     Crossfade every 5.2 s; dots to pick one, swipe on phones.
 
   Calendar   Austrian date (Europe/Vienna). First match wins:
                24 - 26 Dec          Weihnachten         theme christmas
-               15 Nov - 23 Dec      Countdown Heiliger Abend   christmas
+               15 Nov - 23 Dec      Weihnachtsgeschenk         christmas
                27 - 31 Dec          Zwischen den Jahren        winter
                1 - 6 Jan            Neujahr (bis Dreikönig)    winter
                1 - 14 Feb           Valentinstag               valentine
@@ -24,7 +25,9 @@
                2nd Sun Jun -12 d    Vatertag (AT)              summer
                1 - 15 Sep           Schulbeginn                autumn
              otherwise the season: winter / spring / summer / autumn.
-             Events show a tag with a real countdown; plain seasons show none.
+             Events show a small label on the photo; plain seasons show none.
+  Effects    snow (christmas, winter), hearts (valentine), petals (easter,
+             spring), light (summer), leaves (autumn).
 
   Preview    ?mtpForce=1                  show now, ignore the 3-day pause
              ?mtpDate=2027-04-01          pretend it is that day
@@ -139,10 +142,9 @@
     box-shadow: 0 -12px 40px rgba(0, 0, 0, 0.18) !important;
     transform: translateY(104%);
     transition: transform 0.55s var(--mtp-ease) !important;
-    touch-action: pan-x !important;
+    touch-action: none !important;  /* no page scroll / pull-to-refresh behind the popup */
   }
   #mtp-root.mtp-open .mtp-card { transform: translateY(0); }
-  #mtp-root .mtp-card.is-dragging { transition: none !important; }
 
   /* ==========================================================================
      5. PHOTO
@@ -174,18 +176,37 @@
     pointer-events: none !important;
   }
 
-  /* Drag handle (phones only) */
-  #mtp-root .mtp-handle {
+  /* Gallery dots */
+  #mtp-root .mtp-dots {
     position: absolute !important;
-    top: 8px !important;
-    left: 50% !important;
-    width: 40px !important;
-    height: 4px !important;
-    margin-left: -20px !important;
-    border-radius: 4px !important;
-    background: rgba(255, 255, 255, 0.85) !important;
-    z-index: 3 !important;
+    right: 14px !important;
+    bottom: 14px !important;
+    z-index: 4 !important;
+    display: flex !important;
+    gap: 2px !important;
+    padding: 2px 6px !important;
+    border-radius: 999px !important;
+    background: rgba(0, 0, 0, 0.22) !important;
   }
+  #mtp-root .mtp-dot {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 22px !important;
+    height: 26px !important;
+    cursor: pointer !important;
+  }
+  #mtp-root .mtp-dot::after {
+    content: '' !important;
+    display: block !important;
+    width: 8px !important;
+    height: 8px !important;
+    border-radius: 50% !important;
+    background: rgba(255, 255, 255, 0.55) !important;
+    transition: background 0.3s ease, width 0.3s ease !important;
+  }
+  #mtp-root .mtp-dot[aria-current="true"]::after { background: #fff !important; width: 18px !important; border-radius: 4px !important; }
+  #mtp-root .mtp-dot:hover::after { background: #fff !important; }
 
   /* Event tag - only rendered when there is a real date to talk about */
   #mtp-root .mtp-tag {
@@ -206,6 +227,8 @@
     box-shadow: 0 4px 14px rgba(0, 0, 0, 0.14) !important;
   }
   #mtp-root .mtp-tag[hidden] { display: none !important; }
+  /* The tag floats over the photo, so it only needs the visible language */
+  #mtp-root[lang="de"] .mtp-tag [lang="en"], #mtp-root[lang="en"] .mtp-tag [lang="de"] { display: none !important; }
   #mtp-root .mtp-tag svg { width: 16px !important; height: 16px !important; flex: 0 0 auto !important; display: block !important; }
 
   /* ---- Close ---- */
@@ -275,7 +298,7 @@
     display: block !important;
   }
   #mtp-root .mtp-proof-text { font-size: 14px !important; line-height: 1.35 !important; color: var(--mtp-muted) !important; }
-  #mtp-root .mtp-proof-text b { display: block !important; font-weight: 700 !important; color: var(--mtp-ink) !important; }
+  #mtp-root .mtp-proof-text b { font-weight: 700 !important; color: var(--mtp-ink) !important; }
 
   #mtp-root .mtp-quote {
     padding-left: 14px !important;
@@ -338,6 +361,13 @@
   }
   #mtp-root .mtp-lang button[aria-pressed="true"] { background: var(--mtp-soft) !important; color: var(--mtp-ink) !important; }
 
+  /* Both languages are rendered on top of each other; only one is visible.
+     The card is therefore always sized to the longer text and never jumps. */
+  #mtp-root [data-mtp] { display: grid !important; }
+  #mtp-root [data-mtp] > span { grid-area: 1 / 1 !important; }
+  #mtp-root[lang="de"] [data-mtp] > [lang="en"],
+  #mtp-root[lang="en"] [data-mtp] > [lang="de"] { visibility: hidden !important; }
+
   #mtp-root .mtp-card:focus { outline: none !important; }
   #mtp-root :focus-visible { outline: 2px solid var(--mtp-accent) !important; outline-offset: 2px !important; }
 
@@ -347,14 +377,16 @@
   #mtp-root .mtp-fx { position: absolute !important; inset: 0 !important; z-index: 2 !important; overflow: hidden !important; pointer-events: none !important; }
   #mtp-root .mtp-p {
     position: absolute !important;
-    top: -8% !important;
+    top: -8%;  /* no !important: it would freeze the fall animation */
     display: block !important;
     background: var(--mtp-fx) !important;
     animation: mtpFall linear infinite;
   }
-  #mtp-root .mtp-p.snow  { border-radius: 50% !important; }
+  #mtp-root .mtp-p.snow  { border-radius: 50% !important; box-shadow: 0 0 4px rgba(40, 60, 90, 0.35) !important; }
   #mtp-root .mtp-p.petal { border-radius: 80% 0 80% 0 !important; }
   #mtp-root .mtp-p.leaf  { border-radius: 0 90% 0 90% !important; }
+  #mtp-root .mtp-p.heart { background: transparent !important; color: var(--mtp-fx) !important; line-height: 1 !important; text-align: center !important; }
+  #mtp-root .mtp-p.glow  { border-radius: 50% !important; box-shadow: 0 0 10px 3px var(--mtp-fx) !important; animation-direction: reverse; }
   @keyframes mtpFall {
     0%   { top: -8%;  transform: translateX(0) rotate(0deg); }
     100% { top: 108%; transform: translateX(var(--dx)) rotate(var(--rot)); }
@@ -370,7 +402,7 @@
     #mtp-root .mtp-media { height: clamp(96px, 22dvh, 180px) !important; }
     #mtp-root .mtp-proof img { display: none !important; }
     #mtp-root .mtp-body { gap: 10px !important; padding-top: 16px !important; }
-    #mtp-root .mtp-proof-text span { display: none !important; }
+    #mtp-root [data-mtp="proof2"] { display: none !important; }
     #mtp-root .mtp-cta { min-height: 48px !important; padding-block: 12px !important; }
   }
   @media (max-width: 380px) {
@@ -395,7 +427,6 @@
     }
     #mtp-root.mtp-open .mtp-card { transform: none; opacity: 1; }
     #mtp-root .mtp-media { height: auto !important; min-height: 460px !important; }
-    #mtp-root .mtp-handle { display: none !important; }
     #mtp-root .mtp-tag { left: 20px !important; bottom: 20px !important; }
     #mtp-root .mtp-body { justify-content: center !important; gap: 18px !important; padding: 48px 48px 40px !important; }
     #mtp-root .mtp-title { font-size: clamp(28px, 2.6vw, 36px) !important; }
@@ -423,10 +454,11 @@
       <img class="mtp-slide is-active" src="https://montresor.at/media/posts/4/gallery/P8020231.jpg" alt="" decoding="async">
       <img class="mtp-slide" src="https://montresor.at/media/posts/2/responsive/P8020268-2-xl.jpg" alt="" loading="lazy" decoding="async">
       <img class="mtp-slide" src="https://montresor.at/media/posts/2/responsive/P8020219-xl.jpg" alt="" loading="lazy" decoding="async">
+      <img class="mtp-slide" src="https://montresor.at/media/posts/2/responsive/P8020215-xl.jpg" alt="" loading="lazy" decoding="async">
       <img class="mtp-slide" src="https://montresor.at/media/posts/4/gallery/P8020207.jpg" alt="" loading="lazy" decoding="async">
       <div class="mtp-wash"></div>
       <div class="mtp-fx" aria-hidden="true"></div>
-      <span class="mtp-handle" aria-hidden="true"></span>
+      <div class="mtp-dots" role="group"></div>
       <p class="mtp-tag" hidden>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>
         <span data-mtp="tag"></span>
@@ -450,8 +482,8 @@
       </a>
 
       <div class="mtp-links">
-        <a href="#" data-mtp-link="more"></a>
-        <a href="#" data-mtp-link="reviews"></a>
+        <a href="#" data-mtp-link="more"><span data-mtp="more"></span></a>
+        <a href="#" data-mtp-link="reviews"><span data-mtp="reviews"></span></a>
         <div class="mtp-lang" role="group">
           <button type="button" data-mtp-lang="de">DE</button>
           <button type="button" data-mtp-lang="en">EN</button>
@@ -470,20 +502,15 @@
   'use strict';
 
   var CONFIG = {
-    delay: 10000,            // ms on the page before it appears
-    scrollShare: 0.35,       // ...or once this share of the page is scrolled
-    exitIntent: true,        // ...or when the mouse leaves through the top (desktop)
+    delay: 300,              // ms after page load (just enough for the slide-in to animate)
     pauseDays: 3,            // closed -> stay away this long
     pauseDaysAfterClick: 30, // clicked "bestellen" -> stay away this long
     skipPaths: ['bestellen', 'how-to-order'], // never interrupt someone who is already ordering
-    slideInterval: 6500,
-    // Last order date that still arrives before Christmas, e.g. '12-18'.
-    // When set, the tag switches to it during the last 10 days before. Leave '' if unsure.
-    christmasOrderBy: ''
+    slideInterval: 5200      // ms per photo
   };
 
   /* ==========================================================================
-     CONTENT - every text and link. Tags: many/one/zero = days left >1 / 1 / 0.
+     CONTENT - every text and link. tag = small label on the photo (events only).
      ========================================================================== */
   var CONTENT = {
     de: {
@@ -495,8 +522,7 @@
       reviews: 'Erfahrungen lesen',
       close: 'Schließen',
       lang: 'Sprache',
-      orderBy: 'Bestellen bis {date} – kommt vor Weihnachten',
-      months: ['Jänner', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'],
+      photo: 'Bild',
       links: {
         order: 'https://montresor.at/mon-tresor-bestellen/',
         reviews: 'https://montresor.at/tags/blog/',
@@ -504,7 +530,7 @@
       },
       events: {
         christmas: {
-          tag: { many: 'Noch {n} Tage bis zum Heiligen Abend', one: 'Morgen ist Heiliger Abend' },
+          tag: 'Geschenkidee zu Weihnachten',
           title: 'Schenk heuer einen Abend, an dem alle wirklich da sind.',
           text: 'Mon Tresor ist ein Ermutigungsspiel: Niemand gewinnt gegen jemanden. Ihr schaut einander an und sprecht aus, was ihr am anderen schätzt – Kinder, Eltern und Großeltern.',
           cta: 'Zu Weihnachten schenken'
@@ -526,25 +552,25 @@
           text: 'Ein Abend pro Woche ohne Bildschirm. Die Karten von Mon Tresor geben den Anstoß – ganz ohne Vorbereitung.'
         },
         valentine: {
-          tag: { many: 'Noch {n} Tage bis zum Valentinstag', one: 'Morgen ist Valentinstag', zero: 'Heute ist Valentinstag' },
+          tag: 'Valentinstag',
           title: 'Sag es einmal laut.',
           text: 'Was wir an einem Menschen schätzen, sprechen wir viel zu selten aus. Mon Tresor macht es leicht – zu zweit oder mit der ganzen Familie.',
           cta: 'Zum Valentinstag schenken'
         },
         easter: {
-          tag: { many: 'Noch {n} Tage bis Ostern', one: 'Morgen ist Ostersonntag', zero: 'Frohe Ostern' },
+          tag: 'Ostern',
           title: 'Etwas fürs Osternest, das nicht schmilzt.',
           text: 'Statt noch mehr Schokolade: ein Spiel, bei dem Kinder hören, was in ihnen steckt. Für die Feiertage und viele Abende danach.',
           cta: 'Fürs Osternest bestellen'
         },
         mothersDay: {
-          tag: { many: 'Noch {n} Tage bis zum Muttertag', one: 'Morgen ist Muttertag', zero: 'Heute ist Muttertag' },
+          tag: 'Muttertag',
           title: 'Für die, die sonst immer zuerst an alle anderen denkt.',
           text: 'Zum Muttertag einmal umgekehrt: Mon Tresor lädt ein, ihr zu sagen, was man an ihr schätzt – Kinder genauso wie Erwachsene.',
           cta: 'Zum Muttertag schenken'
         },
         fathersDay: {
-          tag: { many: 'Noch {n} Tage bis zum Vatertag', one: 'Morgen ist Vatertag', zero: 'Heute ist Vatertag' },
+          tag: 'Vatertag',
           title: 'Was du deinem Papa schon lange sagen wolltest.',
           text: 'Väter hören selten, was ihre Kinder an ihnen schätzen. Mon Tresor gibt den Anlass – ohne dass man sich eine Rede zurechtlegen muss.',
           cta: 'Zum Vatertag schenken'
@@ -582,8 +608,7 @@
       reviews: 'Read experiences',
       close: 'Close',
       lang: 'Language',
-      orderBy: 'Order by {date} to have it before Christmas',
-      months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+      photo: 'Photo',
       links: {
         order: 'https://montresor.at/english/how-to-order-mon-tresor.html',
         reviews: 'https://montresor.at/english/tags/blog/',
@@ -591,7 +616,7 @@
       },
       events: {
         christmas: {
-          tag: { many: '{n} days until Christmas Eve', one: 'Christmas Eve is tomorrow' },
+          tag: 'A Christmas gift idea',
           title: 'This year, give an evening where everyone is really there.',
           text: 'Mon Tresor is a game of encouragement: nobody wins against anybody. You look at each other and say what you value in one another – children, parents and grandparents.',
           cta: 'Give it for Christmas'
@@ -613,25 +638,25 @@
           text: 'One screen-free evening a week. The Mon Tresor cards get you started – no preparation needed.'
         },
         valentine: {
-          tag: { many: '{n} days until Valentine\'s Day', one: 'Valentine\'s Day is tomorrow', zero: 'It\'s Valentine\'s Day' },
+          tag: 'Valentine\'s Day',
           title: 'Say it out loud, for once.',
           text: 'We rarely tell people what we value in them. Mon Tresor makes it easy – as a couple or with the whole family.',
           cta: 'Give it for Valentine\'s'
         },
         easter: {
-          tag: { many: '{n} days until Easter', one: 'Easter Sunday is tomorrow', zero: 'Happy Easter' },
+          tag: 'Easter',
           title: 'Something for the Easter basket that won\'t melt.',
           text: 'Instead of more chocolate: a game where children hear what is inside them. For the holidays and many evenings after.',
           cta: 'Order for Easter'
         },
         mothersDay: {
-          tag: { many: '{n} days until Mother\'s Day', one: 'Mother\'s Day is tomorrow', zero: 'It\'s Mother\'s Day' },
+          tag: 'Mother\'s Day',
           title: 'For the one who always thinks of everyone else first.',
           text: 'For Mother\'s Day, turn it around: Mon Tresor invites everyone to tell her what they value about her – children and adults alike.',
           cta: 'Give it for Mother\'s Day'
         },
         fathersDay: {
-          tag: { many: '{n} days until Father\'s Day', one: 'Father\'s Day is tomorrow', zero: 'It\'s Father\'s Day' },
+          tag: 'Father\'s Day',
           title: 'What you\'ve been meaning to tell your dad.',
           text: 'Dads rarely hear what their children value about them. Mon Tresor gives you the occasion – no speech required.',
           cta: 'Give it for Father\'s Day'
@@ -662,12 +687,15 @@
     }
   };
 
-  /* Particles per theme: shape, count per 100k px² of photo. Themes not listed get none. */
+  /* Particles per theme: shape, size px, fall time s, spin deg, count per 100k px² of photo. */
   var FX = {
-    christmas: { shape: 'snow',  size: [3, 7],  dur: [7, 14], rot: 0,   density: 5 },
-    winter:    { shape: 'snow',  size: [3, 7],  dur: [8, 15], rot: 0,   density: 4 },
-    spring:    { shape: 'petal', size: [7, 11], dur: [8, 14], rot: 300, density: 1.6 },
-    autumn:    { shape: 'leaf',  size: [8, 13], dur: [7, 12], rot: 420, density: 1.6 }
+    christmas: { shape: 'snow',  size: [4, 10],   dur: [6, 13], rot: 0,   density: 28 },
+    winter:    { shape: 'snow',  size: [4, 9],   dur: [7, 14], rot: 0,   density: 22 },
+    valentine: { shape: 'heart', size: [10, 18], dur: [7, 13], rot: 40,  density: 8 },
+    easter:    { shape: 'petal', size: [7, 11],  dur: [8, 14], rot: 300, density: 9 },
+    spring:    { shape: 'petal', size: [7, 11],  dur: [8, 14], rot: 300, density: 9 },
+    summer:    { shape: 'glow',  size: [3, 6],   dur: [9, 16], rot: 0,   density: 10 },
+    autumn:    { shape: 'leaf',  size: [8, 13],  dur: [7, 12], rot: 420, density: 8 }
   };
 
   /* CALENDAR:START - pure date logic, checked by check.cjs. Dates are UTC midnights. */
@@ -698,13 +726,13 @@
     var easter = easterSunday(y), mum = nthSunday(y, 5, 2), dad = nthSunday(y, 6, 2);
     return [
       { id: 'christmasDays', theme: 'christmas', from: d(y, 12, 24), to: d(y, 12, 26) },
-      { id: 'christmas',     theme: 'christmas', from: d(y, 11, 15), to: d(y, 12, 23), target: d(y, 12, 24) },
+      { id: 'christmas',     theme: 'christmas', from: d(y, 11, 15), to: d(y, 12, 23) },
       { id: 'betweenYears',  theme: 'winter',    from: d(y, 12, 27), to: d(y, 12, 31) },
       { id: 'newYear',       theme: 'winter',    from: d(y, 1, 1),   to: d(y, 1, 6) },
-      { id: 'valentine',     theme: 'valentine', from: d(y, 2, 1),   to: d(y, 2, 14), target: d(y, 2, 14) },
-      { id: 'easter',        theme: 'easter',    from: easter - 21 * DAY, to: easter + DAY, target: easter },
-      { id: 'mothersDay',    theme: 'spring',    from: mum - 12 * DAY, to: mum, target: mum },
-      { id: 'fathersDay',    theme: 'summer',    from: dad - 12 * DAY, to: dad, target: dad },
+      { id: 'valentine',     theme: 'valentine', from: d(y, 2, 1),   to: d(y, 2, 14) },
+      { id: 'easter',        theme: 'easter',    from: easter - 21 * DAY, to: easter + DAY },
+      { id: 'mothersDay',    theme: 'spring',    from: mum - 12 * DAY, to: mum },
+      { id: 'fathersDay',    theme: 'summer',    from: dad - 12 * DAY, to: dad },
       { id: 'schoolStart',   theme: 'autumn',    from: d(y, 9, 1),   to: d(y, 9, 15) }
     ];
   }
@@ -714,11 +742,11 @@
     for (var i = 0; i < list.length; i++) {
       var ev = list[i];
       if (today >= ev.from && today <= ev.to) {
-        return { id: ev.id, theme: ev.theme, days: ev.target != null ? Math.round((ev.target - today) / DAY) : null };
+        return { id: ev.id, theme: ev.theme };
       }
     }
     var s = seasonOf(t.getUTCMonth() + 1);
-    return { id: s, theme: s, days: null };
+    return { id: s, theme: s };
   }
   /* CALENDAR:END */
 
@@ -772,61 +800,60 @@
   var lang = detectLang();
 
   function $(sel) { return root.querySelector(sel); }
-  function set(name, value) { var n = $('[data-mtp="' + name + '"]'); if (n) n.textContent = value || ''; }
 
-  function tagText(c, e) {
-    if (ev.id === 'christmas' && CONFIG.christmasOrderBy && ev.days <= 10) {
-      var p = CONFIG.christmasOrderBy.split('-'), by = d(new Date(today).getUTCFullYear(), +p[0], +p[1]);
-      if (today <= by) return c.orderBy.replace('{date}', lang === 'de' ? (+p[1]) + '. ' + c.months[+p[0] - 1] : c.months[+p[0] - 1] + ' ' + (+p[1]));
-    }
-    var t = e.tag;
-    if (!t || typeof t === 'string') return t || '';
-    if (ev.days > 1) return t.many.replace('{n}', ev.days);
-    if (ev.days === 1) return t.one;
-    return t.zero || t.one;
+  /* Fill every [data-mtp] slot with one span per language (see CSS: stacked languages) */
+  function fill() {
+    root.querySelectorAll('[data-mtp]').forEach(function (n) {
+      var k = n.getAttribute('data-mtp');
+      n.textContent = '';
+      Object.keys(CONTENT).forEach(function (l) {
+        var c = CONTENT[l], e = c.events[ev.id], s = document.createElement('span');
+        s.lang = l;
+        s.textContent = (k === 'cta' ? e.cta || c.cta : k in e ? e[k] : c[k]) || '';
+        n.appendChild(s);
+      });
+    });
+    var e = CONTENT.de.events[ev.id];
+    $('.mtp-tag').hidden = !e.tag;
+    root.querySelectorAll('[data-mtp-link]').forEach(function (a) { a.hidden = a.getAttribute('data-mtp-link') === e.link; });
   }
 
   function render() {
     var c = CONTENT[lang], e = c.events[ev.id];
     root.setAttribute('lang', lang);
-    set('title', e.title);
-    set('text', e.text);
-    set('proof1', c.proof1);
-    set('proof2', c.proof2);
-    set('quote', c.quote);
-    set('cta', e.cta || c.cta);
-
-    var tag = tagText(c, e);
-    set('tag', tag);
-    $('.mtp-tag').hidden = !tag;
-
     $('[data-mtp-cta]').href = c.links[e.link || 'order'];
-    root.querySelectorAll('[data-mtp-link]').forEach(function (a) {
-      var k = a.getAttribute('data-mtp-link');
-      a.href = c.links[k];
-      a.textContent = c[k];
-      a.hidden = k === e.link; // don't offer the same link twice
-    });
+    root.querySelectorAll('[data-mtp-link]').forEach(function (a) { a.href = c.links[a.getAttribute('data-mtp-link')]; });
     root.querySelectorAll('[data-mtp-lang]').forEach(function (b) {
       b.setAttribute('aria-pressed', String(b.getAttribute('data-mtp-lang') === lang));
     });
     $('.mtp-lang').setAttribute('aria-label', c.lang);
     $('.mtp-close').setAttribute('aria-label', c.close);
+    dots.forEach(function (b, i) { b.setAttribute('aria-label', c.photo + ' ' + (i + 1)); });
   }
 
-  /* ---- Photo crossfade ---- */
-  var slides = root.querySelectorAll('.mtp-slide'), current = 0, timer = null;
+  /* ---- Photo gallery: crossfade + dots + swipe ---- */
+  var slides = root.querySelectorAll('.mtp-slide'), current = 0, timer = null, dots = [];
   var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  [].forEach.call(slides, function (_, i) {
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'mtp-dot';
+    b.setAttribute('data-mtp-go', i);
+    $('.mtp-dots').appendChild(b);
+    dots.push(b);
+  });
+  function goTo(i) {
+    current = (i + slides.length) % slides.length;
+    [].forEach.call(slides, function (s, j) { s.classList.toggle('is-active', j === current); });
+    dots.forEach(function (b, j) { b.setAttribute('aria-current', String(j === current)); });
+  }
   function startSlides() {
     stopSlides();
     if (reduce || slides.length < 2) return;
-    timer = setInterval(function () {
-      slides[current].classList.remove('is-active');
-      current = (current + 1) % slides.length;
-      slides[current].classList.add('is-active');
-    }, CONFIG.slideInterval);
+    timer = setInterval(function () { goTo(current + 1); }, CONFIG.slideInterval);
   }
   function stopSlides() { clearInterval(timer); timer = null; }
+  goTo(0);
 
   /* ---- Particles ---- */
   function rand(a, b) { return a + Math.random() * (b - a); }
@@ -835,14 +862,15 @@
     box.innerHTML = '';
     if (!fx || reduce || (navigator.connection && navigator.connection.saveData)) return;
     var area = box.offsetWidth * box.offsetHeight;
-    var count = Math.min(40, Math.round(area / 100000 * fx.density));
+    var count = Math.min(70, Math.round(area / 100000 * fx.density));
     for (var i = 0; i < count; i++) {
       var p = document.createElement('span'), s = rand(fx.size[0], fx.size[1]), dur = rand(fx.dur[0], fx.dur[1]);
       p.className = 'mtp-p ' + fx.shape;
+      if (fx.shape === 'heart') { p.textContent = '\u2665'; p.style.fontSize = s + 'px'; }
       p.style.cssText = 'left:' + rand(0, 100) + '%;width:' + s + 'px;height:' + (fx.shape === 'snow' ? s : s * 0.7) + 'px;' +
         'opacity:' + rand(0.45, 0.9).toFixed(2) + ';animation-duration:' + dur + 's;animation-delay:-' + rand(0, dur) + 's;' +
         '--dx:' + rand(-40, 40) + 'px;--rot:' + rand(-fx.rot, fx.rot) + 'deg;' +
-        (fx.shape === 'snow' && s < 4.5 ? 'filter:blur(1px);' : '');
+        (fx.shape === 'snow' && s < 5.5 ? 'filter:blur(0.6px);' : '');
       box.appendChild(p);
     }
   }
@@ -853,7 +881,7 @@
   function open() {
     if (shown) return;
     shown = true;
-    detach();
+    fill();
     render();
     lastFocus = document.activeElement;
     prevOverflow = document.documentElement.style.overflow;
@@ -870,7 +898,6 @@
     root.classList.remove('mtp-open');
     root.setAttribute('aria-hidden', 'true');
     document.documentElement.style.overflow = prevOverflow;
-    card.style.transform = '';
     stopSlides();
     setTimeout(function () { $('.mtp-fx').innerHTML = ''; }, 600);
     if (lastFocus && lastFocus.focus) try { lastFocus.focus({ preventScroll: true }); } catch (e) {}
@@ -881,6 +908,8 @@
     if (t.closest('[data-mtp-close]')) { e.preventDefault(); close(); return; }
     var l = t.closest('[data-mtp-lang]');
     if (l) { lang = l.getAttribute('data-mtp-lang'); render(); return; }
+    var g = t.closest('[data-mtp-go]');
+    if (g) { goTo(+g.getAttribute('data-mtp-go')); startSlides(); return; }
     if (t.closest('[data-mtp-cta]')) pause(CONFIG.pauseDaysAfterClick);
   });
 
@@ -894,43 +923,22 @@
     else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
   });
 
-  /* Swipe down to dismiss (bottom sheet) */
-  var startY = null;
-  card.addEventListener('touchstart', function (e) { startY = e.touches[0].clientY; card.classList.add('is-dragging'); }, { passive: true });
-  card.addEventListener('touchmove', function (e) {
-    if (startY === null) return;
-    var dy = Math.max(0, e.touches[0].clientY - startY);
-    card.style.transform = 'translateY(' + dy + 'px)';
-    e.preventDefault();
-  }, { passive: false });
+  /* Swipe sideways to change photo (swiping down does nothing) */
+  var startX = null, startY = null;
+  card.addEventListener('touchstart', function (e) { startX = e.touches[0].clientX; startY = e.touches[0].clientY; }, { passive: true });
   card.addEventListener('touchend', function (e) {
-    card.classList.remove('is-dragging');
-    var dy = startY === null ? 0 : e.changedTouches[0].clientY - startY;
-    startY = null;
-    card.style.transform = '';
-    if (dy > 90) close();
+    if (startX === null) return;
+    var dx = e.changedTouches[0].clientX - startX, dy = e.changedTouches[0].clientY - startY;
+    startX = startY = null;
+    if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) { goTo(current + (dx < 0 ? 1 : -1)); startSlides(); }
   });
 
   document.addEventListener('visibilitychange', function () {
     if (root.classList.contains('mtp-open')) document.hidden ? stopSlides() : startSlides();
   });
 
-  /* ---- Triggers: time, scroll depth, exit intent - first one wins ---- */
-  var delayTimer = setTimeout(open, forced ? 600 : CONFIG.delay);
-  function onScroll() {
-    var max = document.documentElement.scrollHeight - innerHeight;
-    if (max > 0 && scrollY / max >= CONFIG.scrollShare) open();
-  }
-  function onLeave(e) { if (!e.relatedTarget && e.clientY <= 0) open(); }
-  function detach() {
-    clearTimeout(delayTimer);
-    removeEventListener('scroll', onScroll);
-    document.removeEventListener('mouseout', onLeave);
-  }
-  if (!forced) {
-    addEventListener('scroll', onScroll, { passive: true });
-    if (CONFIG.exitIntent && matchMedia('(hover: hover)').matches) document.addEventListener('mouseout', onLeave);
-  }
+  /* ---- Open right away ---- */
+  setTimeout(open, forced ? 600 : CONFIG.delay);
 })();
 </script>
 <!-- Mon Tresor Popup - END -->

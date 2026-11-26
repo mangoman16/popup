@@ -13,16 +13,13 @@ assert.strictEqual(iso(nthSunday(2026, 6, 2)), '2026-06-14', 'Vatertag 2026');
 
 const at = s => { const [y, m, dd] = s.split('-').map(Number); return resolve(d(y, m, dd)); };
 const cases = {
-  '2026-11-14': ['autumn', null], '2026-11-26': ['christmas', 28], '2026-12-23': ['christmas', 1],
-  '2026-12-24': ['christmasDays', null], '2026-12-28': ['betweenYears', null], '2027-01-06': ['newYear', null],
-  '2027-01-07': ['winter', null], '2027-02-14': ['valentine', 0], '2027-03-07': ['easter', 21],
-  '2027-03-29': ['easter', -1], '2027-03-30': ['spring', null], '2026-05-05': ['mothersDay', 5],
-  '2026-06-14': ['fathersDay', 0], '2026-07-20': ['summer', null], '2026-09-07': ['schoolStart', null],
+  '2026-11-14': 'autumn', '2026-11-26': 'christmas', '2026-12-23': 'christmas',
+  '2026-12-24': 'christmasDays', '2026-12-28': 'betweenYears', '2027-01-06': 'newYear',
+  '2027-01-07': 'winter', '2027-02-14': 'valentine', '2027-03-07': 'easter',
+  '2027-03-29': 'easter', '2027-03-30': 'spring', '2026-05-05': 'mothersDay',
+  '2026-06-14': 'fathersDay', '2026-07-20': 'summer', '2026-09-07': 'schoolStart',
 };
-for (const [day, [id, days]] of Object.entries(cases)) {
-  const r = at(day);
-  assert.deepStrictEqual([r.id, r.days], [id, days], day);
-}
+for (const [day, id] of Object.entries(cases)) assert.strictEqual(at(day).id, id, day);
 
 // Every day of two years resolves to an event that has copy in both languages
 for (let t = d(2026, 1, 1); t < d(2028, 1, 1); t += 864e5) {
@@ -30,7 +27,7 @@ for (let t = d(2026, 1, 1); t < d(2028, 1, 1); t += 864e5) {
   for (const l of ['de', 'en']) {
     const e = CONTENT[l].events[r.id];
     assert(e && e.title && e.text, `${l} copy missing for ${r.id}`);
-    if (r.days != null) assert(e.tag && e.tag.many && e.tag.one, `${l} countdown tag missing for ${r.id}`);
+    assert(!!e.tag === !!CONTENT.de.events[r.id].tag && (!e.tag || typeof e.tag === 'string'), `${l} tag mismatch for ${r.id}`);
   }
 }
 console.log('calendar ok');
