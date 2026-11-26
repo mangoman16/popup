@@ -26,7 +26,8 @@
                1 - 15 Sep           Schulbeginn                autumn
              otherwise the season: winter / spring / summer / autumn.
              Events show a small label on the photo; plain seasons show none.
-  Effects    snow (christmas, winter), hearts (valentine), petals (easter,
+  Effects    phone: over the photo; desktop: in the blurred area around the card.
+             snow (christmas, winter), hearts (valentine), petals (easter,
              spring), light (summer), leaves (autumn).
 
   Preview    ?mtpForce=1                  show now, ignore the 3-day pause
@@ -372,9 +373,13 @@
   #mtp-root :focus-visible { outline: 2px solid var(--mtp-accent) !important; outline-offset: 2px !important; }
 
   /* ==========================================================================
-     7. PARTICLES - only over the photo, never over text
+     7. PARTICLES - phones: over the photo. Desktop: around the card, never over it
      ========================================================================== */
   #mtp-root .mtp-fx { position: absolute !important; inset: 0 !important; z-index: 2 !important; overflow: hidden !important; pointer-events: none !important; }
+  /* Desktop: the layer moves out of the photo into the blurred backdrop, behind the card */
+  #mtp-root > .mtp-fx { z-index: 0 !important; }
+  #mtp-root .mtp-card { z-index: 1 !important; }
+
   #mtp-root .mtp-p {
     position: absolute !important;
     top: -8%;  /* no !important: it would freeze the fall animation */
@@ -860,9 +865,11 @@
   function buildFx() {
     var box = $('.mtp-fx'), fx = FX[ev.theme];
     box.innerHTML = '';
+    if (matchMedia('(min-width: 760px) and (min-height: 500px)').matches) root.insertBefore(box, card);
+    else $('.mtp-media').appendChild(box);
     if (!fx || reduce || (navigator.connection && navigator.connection.saveData)) return;
     var area = box.offsetWidth * box.offsetHeight;
-    var count = Math.min(70, Math.round(area / 100000 * fx.density));
+    var count = Math.min(140, Math.round(area / 100000 * fx.density));
     for (var i = 0; i < count; i++) {
       var p = document.createElement('span'), s = rand(fx.size[0], fx.size[1]), dur = rand(fx.dur[0], fx.dur[1]);
       p.className = 'mtp-p ' + fx.shape;
@@ -911,6 +918,13 @@
     var g = t.closest('[data-mtp-go]');
     if (g) { goTo(+g.getAttribute('data-mtp-go')); startSlides(); return; }
     if (t.closest('[data-mtp-cta]')) pause(CONFIG.pauseDaysAfterClick);
+    // Follow links ourselves: some site/builder scripts swallow clicks on links they don't know.
+    var a = t.closest('a[href]');
+    if (a && !e.ctrlKey && !e.metaKey && !e.shiftKey) {
+      e.preventDefault();
+      e.stopPropagation();
+      try { window.top.location.href = a.href; } catch (err) { location.href = a.href; }
+    }
   });
 
   document.addEventListener('keydown', function (e) {
